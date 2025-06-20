@@ -22,12 +22,32 @@ public class ChatService {
     private final ChatRepository chatRepository;
     
     public MessageDto handleMessage(MessageDto dto) {
-        Member sender = memberRepository.findByUsername(dto.getSender()).orElse(null);
-        Member receiver = memberRepository.findByUsername("admin").orElse(null);
 
-        if (sender == null || receiver == null) return null;
+        Member sender = memberRepository.findByUsername(dto.getSender())
+                                        .orElse(null);
+        Member receiver = memberRepository.findByUsername("admin")
+                                          .orElse(null);
 
-        liveCommRepository.save(LiveComm.builder()
+        // 테스트용 : 회원이 없으면 dummy 행 삽입
+        if (sender == null) {
+            sender = memberRepository.save(
+                Member.builder()
+                      .username(dto.getSender())
+                      .password("tmp")  // 암호화 X, 테스트용
+                      .role("USER")
+                      .build());
+        }
+        if (receiver == null) {
+            receiver = memberRepository.save(
+                Member.builder()
+                      .username("admin")
+                      .password("tmp")
+                      .role("ADMIN")
+                      .build());
+        }
+
+        LiveComm chat = liveCommRepository.save(
+            LiveComm.builder()
                 .sender(sender)
                 .receiver(receiver)
                 .content(dto.getMessage())
@@ -35,12 +55,8 @@ public class ChatService {
                 .roomId(dto.getRoomId())
                 .build());
 
-        dto.setTimestamp(LocalDateTime.now().toString());
-        return dto;
+        dto.setTimestamp(chat.getTimestamp().toString());
+        return dto;                          // 절대 null 반환하지 않기
     }
-    
-    public int getUnreadMessageCount() {
-        // 미확인 메시지 수 조회 예시 (DB에서 읽지 않은 메시지 개수 카운트)
-        return chatRepository.countByReadFalse();
-    }
+
 }

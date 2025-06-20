@@ -6,22 +6,23 @@ import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "live_comm")
-@Data
-@NoArgsConstructor
-@AllArgsConstructor
-@Builder
+@Data @NoArgsConstructor @AllArgsConstructor @Builder
 public class LiveComm {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE,
+                    generator = "lc_seq")
+    @SequenceGenerator(name = "lc_seq", sequenceName = "LIVE_COMM_SEQ",
+                       allocationSize = 1)
+    @Column(name = "lv_id")
     private Long lvId;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "sender_id")
+    @JoinColumn(name = "sender_id", nullable = true)   // 테스트용 null 허용
     private Member sender;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "receiver_id")
+    @JoinColumn(name = "receiver_id", nullable = true)
     private Member receiver;
 
     @Column(length = 3000)
@@ -32,6 +33,5 @@ public class LiveComm {
     private boolean read;
     
     private LocalDateTime timestamp;
-
     private String roomId;
 }

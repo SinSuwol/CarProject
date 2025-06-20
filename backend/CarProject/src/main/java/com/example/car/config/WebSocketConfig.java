@@ -8,15 +8,17 @@ import org.springframework.web.socket.config.annotation.*;
 @EnableWebSocketMessageBroker
 public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
 
+    /** 1) SockJS 제거  :  withSockJS() 삭제 */
     @Override
     public void registerStompEndpoints(StompEndpointRegistry registry) {
-        registry.addEndpoint("/ws/chat").setAllowedOriginPatterns("*").withSockJS();
+        registry.addEndpoint("/ws/chat")                   // ← 그대로
+                .setAllowedOriginPatterns("*");            // CORS 허용
+                // .withSockJS();  ⬅️ 삭제
     }
 
     @Override
     public void configureMessageBroker(MessageBrokerRegistry registry) {
-        registry.setApplicationDestinationPrefixes("/chat");
-        registry.enableSimpleBroker("/topic");
+        registry.setApplicationDestinationPrefixes("/chat"); // SEND → /chat/...
+        registry.enableSimpleBroker("/topic");               // SUB  → /topic/...
     }
 }
-

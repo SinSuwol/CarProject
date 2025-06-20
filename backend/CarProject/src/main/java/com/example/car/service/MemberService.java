@@ -9,12 +9,30 @@ import com.example.car.repository.MemberRepository;
 
 import lombok.RequiredArgsConstructor;
 
+import jakarta.annotation.PostConstruct;
+
 @Service
 @RequiredArgsConstructor
 public class MemberService {
 
     private final MemberRepository memberRepository;
     private final BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
+
+    @PostConstruct
+    public void createAdminIfNotExist() {
+        if (!memberRepository.existsByUsername("admin")) {
+            Member admin = Member.builder()
+                    .username("admin")
+                    .password(encoder.encode("1234"))
+                    .name("관리자")
+                    .email("admin@example.com")
+                    .phone("010-0000-0000")
+                    .role("ADMIN")
+                    .build();
+            memberRepository.save(admin);
+            System.out.println("✅ 관리자 계정 자동 생성됨");
+        }
+    }
 
     public void register(UserDto dto) {
         Member member = Member.builder()
@@ -23,7 +41,7 @@ public class MemberService {
                 .name(dto.getName())
                 .email(dto.getEmail())
                 .phone(dto.getPhone())
-                .role("user")
+                .role("USER") // 권한은 항상 대문자로 저장 권장
                 .build();
         memberRepository.save(member);
     }
