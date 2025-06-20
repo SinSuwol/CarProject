@@ -19,19 +19,38 @@ class IndexPage extends StatelessWidget{
             );
           },
           child: Padding(
-            padding: const EdgeInsets.all(8), //여기에 이미지 로고 넣으면 됨.
+            padding: const EdgeInsets.all(8),
+            //여기에 이미지 로고 넣으면 됨.
           ),
         ),
         title: const Text(''),
         actions: [
           TextButton(
-              onPressed: () {
-                Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => const LoginPage()),
+            onPressed: () {
+              Navigator.push(
+                context,
+                  MaterialPageRoute(builder: (context) => const LoginPage()),
                 );
               },
-              child: const Text('로그인',),
+            child: const Text('로그인',),
+          ),
+          TextButton(
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => const RegisterPage()),
+              );
+            },
+            child: const Text('회원가입',),
+          ),
+          TextButton(
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => const MyPage()),
+              );
+            },
+            child: const Text('마이페이지',),
           ),
         ],
       ),
