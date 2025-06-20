@@ -23,12 +23,14 @@ public class SecurityConfig {
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
             .csrf(csrf -> csrf.disable())
+            .formLogin(form -> form.disable()) // Spring 로그인창 비활성화
             .authorizeHttpRequests(auth -> auth
-                .requestMatchers("/login", "/register").permitAll()
+                .requestMatchers("/login", "/register", "/reissue", "/logout").permitAll()
                 .anyRequest().authenticated()
             )
-            .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);  // 필터 등록
+            .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
     }
+
 }
