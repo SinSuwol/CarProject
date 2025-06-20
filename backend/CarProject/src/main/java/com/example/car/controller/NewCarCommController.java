@@ -1,46 +1,64 @@
 package com.example.car.controller;
 
-import java.util.List;
-import java.util.Map;
-
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
-
 import com.example.car.dto.NewCarCommDto;
 import com.example.car.service.NewCarCommService;
-
 import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.*;
 
-@RestController
-@RequestMapping("/api/newcar")
+import java.util.List;
+
+@Controller
+@RequestMapping("/newcar")
 @RequiredArgsConstructor
 public class NewCarCommController {
 
-    private final NewCarCommService newCarCommService;
+    private final NewCarCommService newcarCommService;
 
-    @PostMapping("/{username}")
-    public NewCarCommDto create(@PathVariable String username, @RequestBody NewCarCommDto dto) {
-        return newCarCommService.create(username, dto);
-    }
-
+    // 🔹 상담글 목록 보기
     @GetMapping("/{username}")
-    public List<NewCarCommDto> getList(@PathVariable String username) {
-        return newCarCommService.getAllByUsername(username);
+    public String getList(@PathVariable String username, Model model) {
+        List<NewCarCommDto> list = newcarCommService.getAllByUsername(username);
+        model.addAttribute("list", list);
+        model.addAttribute("username", username);
+        return "newcar/list"; // 🔸 templates/newcar/list.html
     }
 
-    @PutMapping("/{id}")
-    public NewCarCommDto update(@PathVariable Long id, @RequestBody Map<String, String> body) {
-        return newCarCommService.update(id, body.get("title"), body.get("content"));
+    // 🔹 상담글 등록 페이지
+    @GetMapping("/{username}/form")
+    public String showForm(@PathVariable String username, Model model) {
+        model.addAttribute("dto", new NewCarCommDto());
+        model.addAttribute("username", username);
+        return "newcar/form"; // 🔸 templates/newcar/form.html
     }
 
-    @DeleteMapping("/{id}")
-    public void delete(@PathVariable Long id) {
-        newCarCommService.delete(id);
+    // 🔹 등록 처리
+    @PostMapping("/{username}/form")
+    public String create(@PathVariable String username, @ModelAttribute NewCarCommDto dto) {
+        newcarCommService.create(username, dto);
+        return "redirect:/newcar/" + username;
+    }
+
+    // 🔹 수정 폼
+    @GetMapping("/edit/{id}")
+    public String editForm(@PathVariable Long id, Model model) {
+        NewCarCommDto dto = newcarCommService.getById(id);
+        model.addAttribute("dto", dto);
+        return "newcar/edit"; // 🔸 templates/newcar/edit.html
+    }
+
+    // 🔹 수정 처리
+    @PostMapping("/edit/{id}")
+    public String update(@PathVariable Long id, @ModelAttribute NewCarCommDto dto) {
+        newcarCommService.update(id, dto.getNcTitle(), dto.getNcContent());
+        return "redirect:/newcar/" + dto.getUsername();
+    }
+
+    // 🔹 삭제
+    @GetMapping("/delete/{id}")
+    public String delete(@PathVariable Long id, @RequestParam String username) {
+        newcarCommService.delete(id);
+        return "redirect:/newcar/" + username;
     }
 }
