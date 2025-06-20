@@ -37,7 +37,8 @@ public class SecurityConfig {
                     "/ws/**"
                 )
                 .permitAll()
-
+                .requestMatchers("/chat/rooms").hasRole("ADMIN")
+                .requestMatchers("/chat/history/**").authenticated()
                 .anyRequest().authenticated()
             )
             .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);
