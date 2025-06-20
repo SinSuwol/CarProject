@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
-import 'dart:convert';
-import 'package:http/http.dart' as http;
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:carproject/pages/index_page.dart';
+import 'package:carproject/pages/register_page.dart'; // 추가
+import 'package:carproject/services/api_service.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -12,32 +14,24 @@ class LoginPage extends StatefulWidget {
 class _LoginPageState extends State<LoginPage> {
   final TextEditingController _idController = TextEditingController();
   final TextEditingController _pwController = TextEditingController();
-
   String message = "";
 
   Future<void> login() async {
-    final url = Uri.parse('http://192.168.0.5:8090/login'); // 실제 서버 주소로 교체 필요
-    final response = await http.post(
-      url,
-      headers: {'Content-Type': 'application/json'},
-      body: jsonEncode({
-        'username': _idController.text,
-        'password': _pwController.text,
-      }),
-    );
+    final data = await ApiService.login(_idController.text, _pwController.text);
 
-    final data = jsonDecode(response.body);
-    if (data['success']) {
-      setState(() {
-        message = "로그인 성공! 사용자: ${data['username']}";
-      });
+    if (data['success'] == true && data['accessToken'] != null) {
+      final prefs = await SharedPreferences.getInstance();
+      await prefs.setString('token', data['accessToken']);
+      await prefs.setString('username', _idController.text); // sender용
 
-      // ✅ 이후: 토큰 저장 (SharedPreferences 등)
-      // ✅ Navigator.push(...)로 메인 페이지 이동
-
+      if (!mounted) return;
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(builder: (_) => const IndexPage()),
+      );
     } else {
       setState(() {
-        message = "로그인 실패: ${data['message']}";
+        message = "로그인 실패: ${data['message'] ?? '서버 오류'}";
       });
     }
   }
@@ -50,12 +44,30 @@ class _LoginPageState extends State<LoginPage> {
         padding: const EdgeInsets.all(20),
         child: Column(
           children: [
-            TextField(controller: _idController, decoration: const InputDecoration(labelText: "아이디")),
-            TextField(controller: _pwController, decoration: const InputDecoration(labelText: "비밀번호"), obscureText: true),
+            TextField(
+              controller: _idController,
+              decoration: const InputDecoration(labelText: "아이디"),
+            ),
+            TextField(
+              controller: _pwController,
+              decoration: const InputDecoration(labelText: "비밀번호"),
+              obscureText: true,
+            ),
             const SizedBox(height: 20),
             ElevatedButton(onPressed: login, child: const Text("로그인")),
             const SizedBox(height: 20),
-            Text(message),
+            Text(message, style: const TextStyle(color: Colors.red)),
+
+            const SizedBox(height: 30),
+            TextButton(
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (_) => const RegisterPage()),
+                );
+              },
+              child: const Text("계정이 없으신가요? 회원가입하기"),
+            ),
           ],
         ),
       ),
