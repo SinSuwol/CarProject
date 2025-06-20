@@ -1,3 +1,4 @@
+import 'package:carproject/pages/index_page.dart';
 import 'package:flutter/material.dart';
 
 void main() {
@@ -5,14 +6,14 @@ void main() {
 }
 
 class MyApp extends StatelessWidget {
-  //미안해요.....
-  //잘못했어요....
-  //감사합니다
   const MyApp({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return const Placeholder();
+    return MaterialApp(
+      title: 'My App',
+      home: const IndexPage(),
+    );
   }
 }
 
