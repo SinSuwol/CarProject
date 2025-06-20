@@ -9,6 +9,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -46,6 +47,12 @@ public class NewCarCommService {
         newcarCommRepository.deleteById(id);
     }
 
+    public NewCarCommDto getById(Long id) {
+        return newcarCommRepository.findById(id)
+                .map(this::toDto)
+                .orElseThrow(() -> new RuntimeException("상담 내역을 찾을 수 없습니다."));
+    }
+  
     private NewCarCommDto toDto(NewCarComm nc) {
         return NewCarCommDto.builder()
                 .ncId(nc.getNcId())

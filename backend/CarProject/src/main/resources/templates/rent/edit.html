@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>상담 수정</title>
+</head>
+<body>
+    <h1>렌트 상담 수정</h1>
+
+    <form th:action="@{/rent/edit/{id}(id=${dto.rtId})}" method="post" th:object="${dto}">
+        <input type="hidden" th:field="*{username}"/>
+
+        <label>제목:</label>
+        <input type="text" th:field="*{rtTitle}" required/><br/><br/>
+
+        <label>내용:</label><br/>
+        <textarea th:field="*{rtContent}" rows="10" cols="50" required></textarea><br/><br/>
+
+        <button type="submit">수정</button>
+        <a th:href="@{|/rent/${dto.username}|}">목록으로</a>
+    </form>
+</body>
+</html>

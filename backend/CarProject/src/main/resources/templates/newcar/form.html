@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>상담 등록</title>
+</head>
+<body>
+    <h1>신차 상담 등록</h1>
+
+    <form th:action="@{|/newcar/${username}/form|}" method="post" th:object="${dto}">
+        <label>제목:</label>
+        <input type="text" th:field="*{ncTitle}" required/><br/><br/>
+
+        <label>내용:</label><br/>
+        <textarea th:field="*{ncContent}" rows="10" cols="50" required></textarea><br/><br/>
+
+        <button type="submit">등록</button>
+        <a th:href="@{|/newcar/${username}|}">목록으로</a>
+    </form>
+</body>
+</html>

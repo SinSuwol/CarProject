@@ -46,6 +46,12 @@ public class RentCommService {
         rentCommRepository.deleteById(id);
     }
 
+    public RentCommDto getById(Long id) {
+        return rentCommRepository.findById(id)
+                .map(this::toDto)
+                .orElseThrow(() -> new RuntimeException("상담 내역이 없습니다."));
+    }
+
     private RentCommDto toDto(RentComm r) {
         return RentCommDto.builder()
                 .rtId(r.getRtId())
