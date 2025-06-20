@@ -16,7 +16,7 @@ class _LoginPageState extends State<LoginPage> {
   String message = "";
 
   Future<void> login() async {
-    final url = Uri.parse('http://localhost:8090/login'); // 실제 서버 주소로 교체 필요
+    final url = Uri.parse('http://192.168.0.5:8090/login'); // 실제 서버 주소로 교체 필요
     final response = await http.post(
       url,
       headers: {'Content-Type': 'application/json'},

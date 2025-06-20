@@ -14,6 +14,7 @@ import java.util.Map;
 
 @RestController
 @RequiredArgsConstructor
+@CrossOrigin(origins = "*")
 public class AuthController {
 
     private final MemberService memberService;
@@ -21,9 +22,11 @@ public class AuthController {
 
     @PostMapping("/register")
     public String register(@RequestBody UserDto userDto) {
+        System.out.println(">> 회원가입 요청: " + userDto);
         memberService.register(userDto);
         return "회원가입 성공";
     }
+
 
     @PostMapping("/login")
     public Map<String, Object> login(@RequestBody LoginDto loginDto, HttpSession session) {
