@@ -17,6 +17,9 @@ class _RegisterPageState extends State<RegisterPage> {
   final _phone = TextEditingController();
 
   String message = "";
+  Color messageColor = Colors.red;
+  bool _obscurePassword = true;
+  bool _obscureConfirm = true;
 
   bool isValidPassword(String pw) {
     final regex = RegExp(r'^(?=.*[A-Za-z])(?=.*\d)(?=.*[!@#\$%^&*])[A-Za-z\d!@#\$%^&*]{8,}$');
@@ -24,13 +27,32 @@ class _RegisterPageState extends State<RegisterPage> {
   }
 
   Future<void> register() async {
+    if (_username.text.isEmpty ||
+        _password.text.isEmpty ||
+        _confirmPassword.text.isEmpty ||
+        _name.text.isEmpty ||
+        _email.text.isEmpty ||
+        _phone.text.isEmpty) {
+      setState(() {
+        message = "모든 항목을 입력해주세요.";
+        messageColor = Colors.red;
+      });
+      return;
+    }
+
     if (_password.text != _confirmPassword.text) {
-      setState(() => message = "비밀번호가 일치하지 않습니다.");
+      setState(() {
+        message = "비밀번호가 일치하지 않습니다.";
+        messageColor = Colors.red;
+      });
       return;
     }
 
     if (!isValidPassword(_password.text)) {
-      setState(() => message = "비밀번호는 8자 이상, 영문/숫자/특수문자 포함해야 합니다.");
+      setState(() {
+        message = "비밀번호는 8자 이상, 영문/숫자/특수문자 포함해야 합니다.";
+        messageColor = Colors.red;
+      });
       return;
     }
 
@@ -48,10 +70,48 @@ class _RegisterPageState extends State<RegisterPage> {
     );
 
     if (response.statusCode == 200) {
-      setState(() => message = "회원가입 성공!");
+      setState(() {
+        message = "회원가입 성공!";
+        messageColor = Colors.green;
+      });
     } else {
-      setState(() => message = "회원가입 실패!");
+      setState(() {
+        message = "회원가입 실패!";
+        messageColor = Colors.red;
+      });
     }
+  }
+
+  Widget buildTextField(String label, TextEditingController controller, {bool obscure = false, bool isConfirm = false}) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 8),
+      child: TextField(
+        controller: controller,
+        obscureText: obscure ? (isConfirm ? _obscureConfirm : _obscurePassword) : false,
+        decoration: InputDecoration(
+          labelText: label,
+          border: OutlineInputBorder(),
+          suffixIcon: obscure
+              ? IconButton(
+            icon: Icon(
+              (isConfirm ? _obscureConfirm : _obscurePassword)
+                  ? Icons.visibility_off
+                  : Icons.visibility,
+            ),
+            onPressed: () {
+              setState(() {
+                if (isConfirm) {
+                  _obscureConfirm = !_obscureConfirm;
+                } else {
+                  _obscurePassword = !_obscurePassword;
+                }
+              });
+            },
+          )
+              : null,
+        ),
+      ),
+    );
   }
 
   @override
@@ -62,16 +122,16 @@ class _RegisterPageState extends State<RegisterPage> {
         padding: const EdgeInsets.all(20),
         child: ListView(
           children: [
-            TextField(controller: _username, decoration: const InputDecoration(labelText: "아이디")),
-            TextField(controller: _password, decoration: const InputDecoration(labelText: "비밀번호"), obscureText: true),
-            TextField(controller: _confirmPassword, decoration: const InputDecoration(labelText: "비밀번호 확인"), obscureText: true),
-            TextField(controller: _name, decoration: const InputDecoration(labelText: "이름")),
-            TextField(controller: _email, decoration: const InputDecoration(labelText: "이메일")),
-            TextField(controller: _phone, decoration: const InputDecoration(labelText: "전화번호")),
+            buildTextField("아이디", _username),
+            buildTextField("비밀번호", _password, obscure: true),
+            buildTextField("비밀번호 확인", _confirmPassword, obscure: true, isConfirm: true),
+            buildTextField("이름", _name),
+            buildTextField("이메일", _email),
+            buildTextField("전화번호", _phone),
             const SizedBox(height: 20),
             ElevatedButton(onPressed: register, child: const Text("회원가입")),
             const SizedBox(height: 20),
-            Text(message, style: const TextStyle(color: Colors.red)),
+            Text(message, style: TextStyle(color: messageColor)),
           ],
         ),
       ),
