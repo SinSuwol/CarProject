@@ -59,4 +59,9 @@ public class ChatService {
         return dto;                          // 절대 null 반환하지 않기
     }
 
+    //읽지 않은 상담내역 개수
+	public int getUnreadMessageCount() {
+		return chatRepository.countByReadFalse();
+	}
+
 }
