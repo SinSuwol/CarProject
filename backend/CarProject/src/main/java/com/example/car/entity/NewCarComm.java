@@ -2,6 +2,9 @@ package com.example.car.entity;
 
 import java.time.LocalDateTime;
 
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedDate;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -22,7 +25,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class NewcarComm {
+public class NewCarComm {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -37,6 +40,9 @@ public class NewcarComm {
     @Column(length = 3000)  // 🔍 본문 길이 늘림
     private String ncContent;
 
+    @CreatedDate
     private LocalDateTime ncRegdate;
+    
+    @LastModifiedDate
     private LocalDateTime ncModdate;
 }

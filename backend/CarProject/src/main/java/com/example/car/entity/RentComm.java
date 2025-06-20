@@ -2,6 +2,9 @@ package com.example.car.entity;
 
 import java.time.LocalDateTime;
 
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedDate;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -37,6 +40,9 @@ public class RentComm {
     @Column(length = 3000)  // 🔍 본문 길이 늘림
     private String rtContent;
 
+    @CreatedDate
     private LocalDateTime rtRegdate;
+    
+    @LastModifiedDate
     private LocalDateTime rtModdate;
 }
