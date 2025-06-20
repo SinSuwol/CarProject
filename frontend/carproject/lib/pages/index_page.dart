@@ -1,7 +1,10 @@
+import 'dart:ui';
+
 import 'package:flutter/material.dart';
 import 'login_page.dart';
 import 'register_page.dart';
 import 'mypage.dart';
+import 'chat_page.dart';
 
 class IndexPage extends StatelessWidget{
   const IndexPage({super.key});
@@ -53,6 +56,17 @@ class IndexPage extends StatelessWidget{
             child: const Text('마이페이지',),
           ),
         ],
+      ),
+      body: Center(
+        child: ElevatedButton(
+            onPressed: () {
+              Navigator.push(
+                  context, 
+                  MaterialPageRoute(builder: (context) => const ChatPage())
+              );
+            },
+            child: const Text('실시간 상담사 찾기'),
+        ),
       ),
     );
   }
