@@ -11,4 +11,14 @@ public class MainController {
 	public String root() {
 		return "index";
 	}
+	
+	@GetMapping("/login")
+	public String loginForm() {
+		return "login";
+	}
+	
+	@GetMapping("/regist")
+	public String registForm() {
+		return "regist";
+	}
 }
