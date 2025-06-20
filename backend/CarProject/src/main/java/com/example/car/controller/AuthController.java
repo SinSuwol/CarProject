@@ -39,11 +39,11 @@ public class AuthController {
             return result;
         }
 
-        // ✅ JWT 생성 (Access + Refresh)
+        //JWT 생성 (Access + Refresh)
         String accessToken = jwtUtil.createAccessToken(member.getUsername());
         String refreshToken = jwtUtil.createRefreshToken(member.getUsername());
 
-        // ✅ 세션 저장 (선택)
+        //세션 저장 (선택)
         session.setAttribute("loginUser", member);
 
         result.put("success", true);
