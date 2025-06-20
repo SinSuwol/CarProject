@@ -26,7 +26,11 @@ public class LiveComm {
 
     @Column(length = 3000)
     private String content;
-
+    
+    //컬럼 추가(읽지 않은 상담 개수)
+    @Column(nullable = false)
+    private boolean read;
+    
     private LocalDateTime timestamp;
 
     private String roomId;

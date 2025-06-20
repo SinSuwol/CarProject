@@ -53,6 +53,18 @@ public class NewCarCommService {
                 .orElseThrow(() -> new RuntimeException("상담 내역을 찾을 수 없습니다."));
     }
   
+    //전체 신차 상담 내역 조회
+    public List<NewCarCommDto> getAll() {
+        List<NewCarComm> entities = newcarCommRepository.findAll();
+        return entities.stream()
+                .map(this::toDto)
+                .toList();
+    }
+    
+    public int countAll() {
+        return (int) newcarCommRepository.count();  // 전체 개수 반환
+    }
+    
     private NewCarCommDto toDto(NewCarComm nc) {
         return NewCarCommDto.builder()
                 .ncId(nc.getNcId())

@@ -30,6 +30,7 @@ public class SecurityConfig {
                     "/register", "/login", "/logout", "/reissue",  // AuthController
                     "/newcar/**",                 // 상담 게시판 (신차)
                     "/rent/**",                   // 상담 게시판 (렌트)
+                    "/admin/**",				  // 관리자 매핑
                     "/ws/**", "/topic/**", "/app/**", // WebSocket 관련
                     "/css/**", "/js/**", "/images/**" // 정적 리소스 (선택)
                 ).permitAll()

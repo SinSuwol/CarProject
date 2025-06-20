@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>렌트 상담 내역</title>
+    <meta charset="UTF-8" />
+</head>
+<body>
+    <h1>🚘 렌트 상담 내역</h1>
+
+    <table border="1">
+        <thead>
+            <tr><th>번호</th><th>제목</th><th>작성자</th><th>등록일</th></tr>
+        </thead>
+        <tbody>
+            <tr th:each="item : ${list}">
+                <td th:text="${item.rtId}"></td>
+                <td th:text="${item.rtTitle}"></td>
+                <td th:text="${item.username}"></td>
+                <td th:text="${#temporals.format(item.rtRegdate, 'yyyy-MM-dd HH:mm')}"></td>
+            </tr>
+        </tbody>
+    </table>
+
+    <a th:href="@{/admin/dashboard}">← 대시보드로 돌아가기</a>
+</body>
+</html>

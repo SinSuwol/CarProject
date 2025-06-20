@@ -57,7 +57,7 @@ public class RentCommController {
 
     // 🔹 삭제 처리
     @GetMapping("/delete/{id}")
-    public String delete(@PathVariable("id") Long id, @RequestParam String username) {
+    public String delete(@PathVariable("id") Long id, @RequestParam("username") String username) {
         rentCommService.delete(id);
         return "redirect:/rent/" + username;
     }
