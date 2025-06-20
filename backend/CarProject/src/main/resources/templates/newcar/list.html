@@ -1,37 +1,35 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
-    <meta charset="UTF-8">
-    <title>신차 상담 내역</title>
+<meta charset="UTF-8">
+<title>신차 상담 내역</title>
 </head>
 <body>
-    <h1 th:text="${username} + '님의 신차 상담 내역'"></h1>
+	<h1 th:text="${username} + '님의 신차 상담 내역'"></h1>
 
-    <a th:href="@{|/newcar/${username}/form|}">상담 등록</a>
+	<a th:href="@{|/newcar/${username}/form|}">상담 등록</a>
 
-    <table border="1">
-        <thead>
-            <tr>
-                <th>번호</th>
-                <th>제목</th>
-                <th>등록일</th>
-                <th>수정</th>
-                <th>삭제</th>
-            </tr>
-        </thead>
-        <tbody>
-            <tr th:each="item : ${list}">
-                <td th:text="${item.ncId}"></td>
-                <td th:text="${item.ncTitle}"></td>
-                <td th:text="${#temporals.format(item.ncRegdate, 'yyyy-MM-dd HH:mm')}"></td>
-                <td><a th:href="@{/newcar/edit/{id}(id=${item.ncId})}">수정</a></td>
-                <td>
-                    <a th:href="@{/newcar/delete/{id}(id=${item.ncId})}" 
-                       th:hrefappend="|?username=${username}|"
-                       onclick="return confirm('삭제하시겠습니까?')">삭제</a>
-                </td>
-            </tr>
-        </tbody>
-    </table>
+	<table border="1">
+		<thead>
+			<tr>
+				<th>번호</th>
+				<th>제목</th>
+				<th>등록일</th>
+				<th>삭제</th>
+			</tr>
+		</thead>
+		<tbody>
+			<tr th:each="item : ${list}">
+				<td><a th:href="@{/newcar/edit/{id}(id=${item.ncId})}"
+					th:text="${item.ncId}"></a></td>
+				<td th:text="${item.ncTitle}"></td>
+				<td
+					th:text="${#temporals.format(item.ncRegdate, 'yyyy-MM-dd HH:mm')}"></td>
+				<td><a
+					th:href="@{/newcar/delete/{id}(id=${item.ncId}, username=${username})}"
+					onclick="return confirm('삭제하시겠습니까?')">삭제</a></td>
+			</tr>
+		</tbody>
+	</table>
 </body>
 </html>

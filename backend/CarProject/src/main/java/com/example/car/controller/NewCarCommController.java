@@ -57,7 +57,7 @@ public class NewCarCommController {
 
     // 🔹 삭제
     @GetMapping("/delete/{id}")
-    public String delete(@PathVariable("id") Long id, @RequestParam String username) {
+    public String delete(@PathVariable("id") Long id, @RequestParam("username") String username) {
         newcarCommService.delete(id);
         return "redirect:/newcar/" + username;
     }
