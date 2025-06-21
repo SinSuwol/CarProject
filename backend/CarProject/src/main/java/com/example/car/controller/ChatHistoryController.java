@@ -19,7 +19,7 @@ public class ChatHistoryController {
 
     /** GET /chat/history/{roomId}  ➜ 최근 100건 */
     @GetMapping("/chat/history/{roomId}")
-    public List<MessageDto> history(@PathVariable String roomId) {
+    public List<MessageDto> history(@PathVariable("roomId")String roomId) {
         return liveRepo.findTop100ByRoomIdOrderByTimestampAsc(roomId)   // JPA 메서드
                 .stream()
                 .map(lc -> {

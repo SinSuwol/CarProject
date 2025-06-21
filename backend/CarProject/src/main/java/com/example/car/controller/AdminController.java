@@ -1,6 +1,7 @@
 package com.example.car.controller;
 
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -11,6 +12,7 @@ import com.example.car.dto.AdminDashboardDto;
 import com.example.car.dto.NewCarCommDto;
 import com.example.car.dto.RentCommDto;
 import com.example.car.service.AdminService;
+import com.example.car.service.ChatService;
 
 import lombok.RequiredArgsConstructor;
 
@@ -20,16 +22,23 @@ import lombok.RequiredArgsConstructor;
 public class AdminController {
 
     private final AdminService adminService;
+    private final ChatService chatService;
 
-    // 관리자 대시보드
+    // ✅ 관리자 대시보드
     @GetMapping("/dashboard")
     public String dashboard(Model model) {
         AdminDashboardDto dashboard = adminService.getDashboardData();
+        List<String> recentRoomIds = chatService.getRecentRoomIdsSorted(); // ✅ 최근 메시지 시간 기준 정렬된 roomId
+        Map<String, Integer> unreadCounts = chatService.getUnreadMessageCounts();
+
         model.addAttribute("dashboard", dashboard);
-        return "admin/dashboard";  // templates/admin/dashboard.html
+        model.addAttribute("recentRoomIds", recentRoomIds);
+        model.addAttribute("unreadCounts", unreadCounts);
+        
+        return "admin/dashboard";  // → templates/admin/dashboard.html
     }
 
-    // 전체 상담 내역 (신차 + 렌트)
+    // ✅ 전체 상담 내역 (신차 + 렌트)
     @GetMapping("/consults")
     public String allConsults(Model model) {
         List<NewCarCommDto> newCarList = adminService.getAllNewCarConsults();
@@ -37,21 +46,20 @@ public class AdminController {
 
         model.addAttribute("newCarList", newCarList);
         model.addAttribute("rentList", rentList);
-        return "admin/consults";  // templates/admin/consults.html
+        return "admin/consults";  // → templates/admin/consults.html
     }
 
-    // 신차 상담 내역
+    // ✅ 신차 상담 내역
     @GetMapping("/newcar")
     public String newCarConsults(Model model) {
         model.addAttribute("list", adminService.getAllNewCarConsults());
-        return "admin/newcar";  // templates/admin/newcar.html
+        return "admin/newcar";  // → templates/admin/newcar.html
     }
 
-    // 렌트 상담 내역
+    // ✅ 렌트 상담 내역
     @GetMapping("/rent")
     public String rentConsults(Model model) {
         model.addAttribute("list", adminService.getAllRentConsults());
-        return "admin/rent";  // templates/admin/rent.html
+        return "admin/rent";  // → templates/admin/rent.html
     }
 }
-

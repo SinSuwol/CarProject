@@ -1,21 +1,20 @@
 <!DOCTYPE html>
 <html>
 <head>
-<meta charset="UTF-8">
-<title>로그인</title>
-<style>
-	* {
+  <meta charset="UTF-8">
+  <title>로그인</title>
+  <style>
+    * {
       box-sizing: border-box;
     }
 
-   body, html {
+    body, html {
       margin: 0;
       padding: 0;
       height: 100%;
       font-family: 'Segoe UI', sans-serif;
     }
 
-    /* 배경 이미지 */
     .background {
       position: absolute;
       top: 0; left: 0;
@@ -26,7 +25,6 @@
       z-index: 0;
     }
 
-    /* 어두운 반투명 배경 덮개 */
     .overlay {
       position: absolute;
       top: 0; left: 0;
@@ -36,7 +34,6 @@
       z-index: 1;
     }
 
-    /* 로그인 폼 영역 */
     .container {
       position: relative;
       z-index: 2;
@@ -62,7 +59,6 @@
       margin-bottom: 30px;
       letter-spacing: 1px;
     }
-
 
     .login-box input {
       width: 100%;
@@ -95,21 +91,52 @@
     .login-box button:hover {
       background-color: #0056b3;
     }
-
-</style>
+  </style>
 </head>
 <body>
 <div class="background"></div>
 <div class="overlay"></div>
 
 <div class="container">
-	<form class="login-box" action="/login" method="psot">
-		<h2>Login</h2>
-		<input type="text" name="username" placeholder="ID"><br>
-		<input type="text" name="password" placeholder="PASSWORD"><br>
-		<button type="submit">login</button><br>
-	</form>
+  <div class="login-box">
+    <h2>Login</h2>
+    <input type="text" id="username" placeholder="ID" required><br>
+    <input type="password" id="password" placeholder="PASSWORD" required><br>
+    <button onclick="submitLogin()">login</button><br>
+  </div>
 </div>
 
+<script>
+  function submitLogin() {
+    const data = {
+      username: document.getElementById("username").value,
+      password: document.getElementById("password").value
+    };
+
+    fetch("/login", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify(data)
+    })
+    .then(res => res.json())
+    .then(result => {
+      if (result.success) {
+        localStorage.setItem("token", result.accessToken);
+        localStorage.setItem("refreshToken", result.refreshToken);
+        localStorage.setItem("username", result.username);
+        localStorage.setItem("role", result.role);
+        window.location.href = "/index";
+      } else {
+        alert("로그인 실패: " + result.message);
+      }
+    })
+    .catch(err => {
+      console.error("로그인 오류:", err);
+      alert("로그인 중 오류 발생");
+    });
+  }
+</script>
 </body>
 </html>

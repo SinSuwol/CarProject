@@ -1,17 +1,12 @@
 package com.example.car.controller;
 
-import org.springframework.messaging.handler.annotation.DestinationVariable;
-import org.springframework.messaging.handler.annotation.MessageMapping;
-import org.springframework.messaging.handler.annotation.Payload;
-import org.springframework.messaging.handler.annotation.SendTo;
-import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.CrossOrigin;
-
 import com.example.car.dto.MessageDto;
 import com.example.car.service.ChatService;
-
 import lombok.RequiredArgsConstructor;
-
+import org.springframework.messaging.handler.annotation.*;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.CrossOrigin;
 
 @CrossOrigin("*")
 @Controller
@@ -19,15 +14,16 @@ import lombok.RequiredArgsConstructor;
 public class ChatController {
 
     private final ChatService chatService;
+    private final SimpMessagingTemplate simpMessagingTemplate;
 
-    //  SEND : /chat/chat.send/{roomId}
-    //  SUB  : /topic/room/{roomId}
+    // 클라이언트 → /chat/chat.send/{roomId} 로 보냄
     @MessageMapping("/chat.send/{roomId}")
-    @SendTo("/topic/room/{roomId}")
-    public MessageDto send(@DestinationVariable("roomId") String roomId,
-                           @Payload MessageDto dto) {          // 🟢
+    public void send(@DestinationVariable("roomId") String roomId,
+                     @Payload MessageDto dto) {
         dto.setRoomId(roomId);
-        return chatService.handleMessage(dto);
+        MessageDto processed = chatService.handleMessage(dto);
+
+        // 서버 → /topic/room/{roomId}로 메시지 브로드캐스트
+        simpMessagingTemplate.convertAndSend("/topic/room/" + roomId, processed);
     }
 }
-

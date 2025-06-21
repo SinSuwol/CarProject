@@ -26,7 +26,7 @@ public class SecurityConfig {
             .formLogin(form -> form.disable())
             .authorizeHttpRequests(auth -> auth
                 .requestMatchers(
-                    "/",                          // index
+                    "/","/**","/index",                          // index
                     "/register", "/regist","/login", "/logout", "/reissue",  // AuthController
                     "/newcar/**",                 // 상담 게시판 (신차)
                     "/rent/**",                   // 상담 게시판 (렌트)

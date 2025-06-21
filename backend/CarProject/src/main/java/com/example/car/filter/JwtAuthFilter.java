@@ -21,9 +21,20 @@ public class JwtAuthFilter implements Filter {
 
     @Override
     public void doFilter(ServletRequest req, ServletResponse res, FilterChain chain)
-        throws IOException, ServletException {
+            throws IOException, ServletException {
 
         HttpServletRequest request = (HttpServletRequest) req;
+        HttpServletResponse response = (HttpServletResponse) res;
+
+        String path = request.getRequestURI();
+
+        // 로그인, 회원가입, 토큰 재발급 경로는 필터 제외
+        if (path.equals("/") || path.equals("/index") ||
+        	    path.equals("/login") || path.equals("/register") || path.equals("/reissue")) {
+        	    chain.doFilter(req, res);
+        	    return;
+        	}
+
         String authHeader = request.getHeader("Authorization");
 
         if (authHeader != null && authHeader.startsWith("Bearer ")) {
@@ -42,7 +53,6 @@ public class JwtAuthFilter implements Filter {
 
                 SecurityContextHolder.getContext().setAuthentication(auth);
             } else {
-                HttpServletResponse response = (HttpServletResponse) res;
                 response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
                 response.getWriter().write("JWT 토큰이 유효하지 않습니다.");
                 return;

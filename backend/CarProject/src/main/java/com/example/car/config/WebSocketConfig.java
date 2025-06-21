@@ -12,8 +12,8 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
     @Override
     public void registerStompEndpoints(StompEndpointRegistry registry) {
         registry.addEndpoint("/ws/chat")                   // ← 그대로
-                .setAllowedOriginPatterns("*");            // CORS 허용
-                // .withSockJS();  ⬅️ 삭제
+                .setAllowedOriginPatterns("*")           // CORS 허용
+                .withSockJS();
     }
 
     @Override

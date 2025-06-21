@@ -1,15 +1,204 @@
 <!DOCTYPE html>
 <html>
 <head>
-<meta charset="UTF-8">
-<title>Insert title here</title>
+  <meta charset="UTF-8">
+  <title>카구매 - 자동차 상담 시스템</title>
+  <style>
+    body, html {
+      margin: 0;
+      padding: 0;
+      font-family: 'Segoe UI', sans-serif;
+      background-color: #f5f5f5;
+    }
+
+    header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background-color: #1a1a1a;
+      padding: 15px 30px;
+      color: white;
+    }
+
+    .logo-area {
+      display: flex;
+      align-items: center;
+    }
+
+    .logo-area img {
+      height: 40px;
+      margin-right: 12px;
+    }
+
+    .logo-area span {
+      font-size: 24px;
+      font-weight: bold;
+    }
+
+    .auth-buttons {
+      display: flex;
+      gap: 12px;
+    }
+
+    .auth-buttons button {
+      background-color: #ff7043;
+      color: white;
+      border: none;
+      padding: 8px 16px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-weight: bold;
+    }
+
+    .auth-buttons button:hover {
+      background-color: #e65100;
+    }
+
+    .slider {
+      width: 100%;
+      height: 350px;
+      overflow: hidden;
+      position: relative;
+      background-color: black;
+    }
+
+    .slider img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain; /* ✅ 이미지 비율 유지 */
+      position: absolute;
+      opacity: 0;
+      transition: opacity 1s ease-in-out;
+    }
+
+    .slider img.active {
+      opacity: 1;
+    }
+
+    .links {
+      text-align: center;
+      margin: 40px 0;
+    }
+
+    .links a {
+      display: inline-block;
+      margin: 10px 15px;
+      padding: 12px 28px;
+      background-color: #1976d2;
+      color: white;
+      text-decoration: none;
+      border-radius: 8px;
+      font-size: 16px;
+      transition: background-color 0.3s;
+    }
+
+    .links a:hover {
+      background-color: #0d47a1;
+    }
+
+    .hero {
+      text-align: center;
+      padding: 60px 20px;
+      background-color: #fff3e0;
+    }
+
+    .hero h1 {
+      font-size: 36px;
+      color: #333;
+      margin-bottom: 20px;
+    }
+
+    .hero p {
+      font-size: 18px;
+      color: #555;
+    }
+  </style>
 </head>
 <body>
-<a href="/index"><img  alt="logo"></a>
-<hr>
-<a href="/rent/testuser">렌트 상담내역 조회(로그인 사용자)</a>
-<a href="/newcar/testuser">신차 상담내역 조회</a>
-<a href="/newcar/testuser/form">신차 상담 등록</a>
-<a href="/rent/testuser/form">렌트 상담 등록</a>
+
+<header>
+  <div class="logo-area">
+    <a href="/index"><img src="https://cdn-icons-png.flaticon.com/512/741/741407.png" alt="logo"></a>
+    <span>카구매</span>
+  </div>
+  <div class="auth-buttons" id="authArea"></div>
+</header>
+
+<div class="slider">
+  <img src="https://imgauto-phinf.pstatic.net/20190926_193/auto_15694705673493eqha_PNG/20190926130245_kMLNOmHK.png" class="active" alt="롤스로이스">
+  <img src="https://imgauto-phinf.pstatic.net/20240626_254/auto_1719380039732hKgIL_PNG/20240626143343_hSwlnsdv.png" alt="벤틀리">
+  <img src="https://imgauto-phinf.pstatic.net/20250212_85/auto_17393320433883BbH8_PNG/20250212124713_XG47BMvN.png" alt="벤츠">
+</div>
+
+<div class="hero">
+  <h1>당신의 드림카, 카구매에서 시작하세요</h1>
+  <p>신차·렌트 상담을 손쉽게 받고, 전문가의 도움으로 합리적인 선택을 하세요.</p>
+</div>
+
+<div class="links" id="linkArea"></div>
+
+<script>
+  // 🔁 슬라이드 이미지 자동 변경
+  const slides = document.querySelectorAll('.slider img');
+  let current = 0;
+  setInterval(() => {
+    slides[current].classList.remove('active');
+    current = (current + 1) % slides.length;
+    slides[current].classList.add('active');
+  }, 3000);
+
+  // 🔐 로그인 여부 및 권한 확인
+  const token = localStorage.getItem("token");
+  const username = localStorage.getItem("username");
+  const role = localStorage.getItem("role");
+
+  const authArea = document.getElementById("authArea");
+  const linkArea = document.getElementById("linkArea");
+
+  if (token && username && role) {
+    // ✅ 관리자일 경우
+    if (role.toUpperCase() === "ADMIN") {
+      authArea.innerHTML = `
+        <button onclick="location.href='/admin/dashboard'">관리자페이지</button>
+        <button onclick="logout()">로그아웃</button>
+      `;
+      linkArea.innerHTML = `
+        <a href="/admin/consults">상담 전체 내역 보기</a>
+      `;
+    } else {
+      // ✅ 일반 사용자
+      authArea.innerHTML = `
+        <button onclick="location.href='/mypage'">마이페이지</button>
+        <button onclick="logout()">로그아웃</button>
+      `;
+      linkArea.innerHTML = `
+        <a href="/chatroom/${encodeURIComponent(username)}">1:1 실시간 상담하기</a> 
+        <a href="/newcar/${encodeURIComponent(username)}/form">신차 상담 등록</a>
+        <a href="/rent/${encodeURIComponent(username)}/form">렌트 상담 등록</a>
+      `;
+    }
+  } else {
+    // ❌ 로그인 안 한 사용자
+    authArea.innerHTML = `
+      <button onclick="location.href='/login'">로그인</button>
+      <button onclick="location.href='/register'">회원가입</button>
+    `;
+    linkArea.innerHTML = `
+      <a href="/login">1:1 실시간 상담하기</a>
+      <a href="/login">신차 상담 등록</a>
+      <a href="/login">렌트 상담 등록</a>
+    `;
+  }
+
+  // 🔓 로그아웃
+  function logout() {
+    localStorage.removeItem("token");
+    localStorage.removeItem("username");
+    localStorage.removeItem("refreshToken");
+    localStorage.removeItem("role");
+    location.href = "/login";
+  }
+</script>
+
 </body>
 </html>

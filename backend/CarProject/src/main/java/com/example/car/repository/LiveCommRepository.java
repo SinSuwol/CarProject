@@ -22,4 +22,17 @@ public interface LiveCommRepository extends JpaRepository<LiveComm, Long> {
 	List<String> findDistinctRoomIdsLast24h(@Param("cut") LocalDateTime cut);
 
 
+	@Query("SELECT lc.roomId FROM LiveComm lc " +
+		       "WHERE lc.timestamp > :cut " +
+		       "GROUP BY lc.roomId " +
+		       "ORDER BY MAX(lc.timestamp) DESC")
+		List<String> findRecentRoomIdsSorted(@Param("cut") LocalDateTime cut);
+	
+	@Query("SELECT lc.roomId, COUNT(lc) FROM LiveComm lc WHERE lc.read = 0 GROUP BY lc.roomId")
+	List<Object[]> countUnreadMessagesByRoom();
+	
+	
+
+
+
 }

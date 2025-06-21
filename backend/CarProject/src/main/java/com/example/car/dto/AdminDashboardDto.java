@@ -1,5 +1,7 @@
 package com.example.car.dto;
 
+import java.util.List;
+
 import lombok.Data;
 
 @Data
@@ -8,4 +10,6 @@ public class AdminDashboardDto {
     private int totalConsultCount;    // 전체 상담 개수
     private int newCarConsultCount;   // 신차 상담 개수
     private int rentConsultCount;     // 렌트 상담 개수
+    
+    private List<String> activeUsers; 
 }

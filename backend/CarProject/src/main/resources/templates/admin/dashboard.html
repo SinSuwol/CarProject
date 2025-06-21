@@ -1,19 +1,128 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
-    <title>관리자 대시보드</title>
-    <meta charset="UTF-8" />
+  <meta charset="UTF-8" />
+  <title>관리자 대시보드</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background-color: #f9f9f9;
+      margin: 0;
+      padding: 0;
+    }
+
+    header {
+      background-color: #222;
+      color: white;
+      padding: 20px 30px;
+      font-size: 24px;
+    }
+
+    .container {
+      max-width: 800px;
+      margin: 40px auto;
+      background: white;
+      padding: 30px;
+      border-radius: 10px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    }
+
+    h2 {
+      text-align: center;
+      color: #333;
+      margin-bottom: 30px;
+    }
+
+    ul {
+      list-style: none;
+      padding: 0;
+      font-size: 18px;
+    }
+
+    ul li {
+      background-color: #f1f1f1;
+      margin-bottom: 12px;
+      padding: 15px 20px;
+      border-radius: 8px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    a {
+      display: inline-block;
+      text-decoration: none;
+      background-color: #007bff;
+      color: white;
+      padding: 12px 24px;
+      border-radius: 6px;
+      transition: background-color 0.2s;
+    }
+
+    a:hover {
+      background-color: #0056b3;
+    }
+
+    .count {
+      font-weight: bold;
+      color: #007bff;
+    }
+
+    .chat-link {
+      background-color: #28a745;
+      padding: 6px 12px;
+      border-radius: 5px;
+      color: white;
+      text-decoration: none;
+      font-size: 14px;
+    }
+
+    .chat-link:hover {
+      background-color: #218838;
+    }
+  </style>
 </head>
 <body>
-    <h1>관리자 대시보드</h1>
 
-    <ul>
-        <li>🔔 실시간 상담 알림 수: <span th:text="${dashboard.chatAlertCount}"></span></li>
-        <li>📋 전체 상담 수: <span th:text="${dashboard.totalConsultCount}"></span></li>
-        <li><a th:href="@{/admin/newcar}">🚗 신차 상담 (<span th:text="${dashboard.newCarConsultCount}"></span>)</a></li>
-        <li><a th:href="@{/admin/rent}">🚘 렌트 상담 (<span th:text="${dashboard.rentConsultCount}"></span>)</a></li>
-    </ul>
+<header>🚙 관리자 대시보드</header>
 
+<div class="container">
+  <h2>전체 상담 현황</h2>
+
+  <ul>
+    <li>- 실시간 상담 알림 수 <span class="count" th:text="${dashboard.chatAlertCount}">0</span></li>
+    <li>- 전체 상담 수 <span class="count" th:text="${dashboard.totalConsultCount}">0</span></li>
+    <li>
+      <a th:href="@{/admin/newcar}">신차 상담</a>
+      <span class="count" th:text="${dashboard.newCarConsultCount}">0</span>
+    </li>
+    <li>
+      <a th:href="@{/admin/rent}">렌트 상담</a>
+      <span class="count" th:text="${dashboard.rentConsultCount}">0</span>
+    </li>
+  </ul>
+
+  <div style="text-align: center; margin-top: 40px;">
     <a th:href="@{/admin/consults}">전체 상담 내역 보기</a>
+  </div>
+
+  <hr style="margin: 40px 0;">
+
+  <h2 style="text-align: center;">최근 실시간 상담 유저</h2>
+  <ul>
+    <li th:each="roomId : ${recentRoomIds}">
+      <span>
+        <span th:text="${#strings.replace(roomId, '_admin', '')}">유저명</span>
+        <span th:if="${unreadCounts != null and unreadCounts[roomId] != null and unreadCounts[roomId] > 0}"
+              th:text="'(' + ${unreadCounts[roomId]} + ')'"
+              style="margin-left: 8px; color: red; font-weight: bold;">
+        </span>
+      </span>
+      <a th:href="@{'/admin/chatroom?target=' + ${#strings.replace(roomId, '_admin', '')}}"
+         class="chat-link">상담하기</a>
+    </li>
+  </ul>
+</div>
+
 </body>
 </html>
