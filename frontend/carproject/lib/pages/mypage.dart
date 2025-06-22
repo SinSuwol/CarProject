@@ -35,7 +35,7 @@ class _MyPageState extends State<MyPage> {
 
     try {
       final res = await http.get(
-        Uri.parse('http://192.168.0.5:8090/mypage'),
+        Uri.parse('http://localhost:8090/mypage'),
         headers: {"Authorization": "Bearer $token"},
       );
 
@@ -45,7 +45,6 @@ class _MyPageState extends State<MyPage> {
           username = data['username'] ?? '';
           email = data['email'] ?? '';
           role = data['role'] ?? '';
-          message = '';
           isLoading = false;
         });
       } else {
@@ -65,13 +64,31 @@ class _MyPageState extends State<MyPage> {
     );
   }
 
-  Widget buildInfoRow(String title, String value) {
-    return Padding(
-      padding: const EdgeInsets.only(bottom: 10),
+  Widget buildInfoCard(String title, String value) {
+    return Container(
+      padding: const EdgeInsets.symmetric(vertical: 14, horizontal: 16),
+      margin: const EdgeInsets.only(bottom: 14),
+      decoration: BoxDecoration(
+        color: const Color(0xFF1E1E1E),
+        borderRadius: BorderRadius.circular(16),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.25),
+            blurRadius: 8,
+            offset: const Offset(0, 4),
+          )
+        ],
+      ),
       child: Row(
         children: [
-          Text("$title: ", style: const TextStyle(fontWeight: FontWeight.bold)),
-          Expanded(child: Text(value)),
+          Text("$title: ",
+              style: const TextStyle(
+                  fontSize: 16, fontWeight: FontWeight.bold, color: Colors.white)),
+          const SizedBox(width: 10),
+          Expanded(
+            child: Text(value,
+                style: const TextStyle(fontSize: 16, color: Colors.white70)),
+          ),
         ],
       ),
     );
@@ -80,20 +97,28 @@ class _MyPageState extends State<MyPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text("마이페이지")),
+      backgroundColor: const Color(0xFF121212),
+      appBar: AppBar(
+        backgroundColor: const Color(0xFF1F2A3C),
+        title: const Text("마이페이지", style: TextStyle(color: Colors.white)),
+        iconTheme: const IconThemeData(color: Colors.white),
+      ),
       body: Padding(
-        padding: const EdgeInsets.all(20),
+        padding: const EdgeInsets.all(24),
         child: isLoading
-            ? const Center(child: CircularProgressIndicator())
+            ? const Center(child: CircularProgressIndicator(color: Colors.orangeAccent))
             : Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const Text("회원 정보",
-                style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold)),
-            const SizedBox(height: 20),
-            buildInfoRow("아이디", username),
-            buildInfoRow("이메일", email),
-            buildInfoRow("권한", role),
+            const Text("내 정보",
+                style: TextStyle(
+                    fontSize: 24,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.white)),
+            const SizedBox(height: 30),
+            buildInfoCard("아이디", username),
+            buildInfoCard("이메일", email),
+            buildInfoCard("권한", role),
             if (message.isNotEmpty)
               Padding(
                 padding: const EdgeInsets.only(top: 20),

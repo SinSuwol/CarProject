@@ -27,7 +27,7 @@ public class SecurityConfig {
             .authorizeHttpRequests(auth -> auth
                 .requestMatchers(
                     "/","/**","/index",                          // index
-                    "/register", "/regist","/login", "/logout", "/reissue",  // AuthController
+                    "/register", "/regist","/login", "/logout", "/reissue","/mypage",  // AuthController
                     "/newcar/**",                 // 상담 게시판 (신차)
                     "/rent/**",                   // 상담 게시판 (렌트)
                     "/admin/**",				  // 관리자 매핑
