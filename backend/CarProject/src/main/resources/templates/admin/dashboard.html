@@ -6,30 +6,33 @@
   <style>
     body {
       font-family: 'Segoe UI', sans-serif;
-      background-color: #f9f9f9;
+      background-color: #111;
       margin: 0;
       padding: 0;
+      color: #eee;
     }
 
     header {
-      background-color: #222;
-      color: white;
+      background-color: #000;
+      color: #fca311;
       padding: 20px 30px;
       font-size: 24px;
+      font-weight: bold;
+      letter-spacing: -0.5px;
     }
 
     .container {
       max-width: 800px;
       margin: 40px auto;
-      background: white;
+      background: #1c1c1c;
       padding: 30px;
-      border-radius: 10px;
-      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+      border-radius: 12px;
+      box-shadow: 0 4px 12px rgba(255, 255, 255, 0.05);
     }
 
     h2 {
       text-align: center;
-      color: #333;
+      color: #fca311;
       margin-bottom: 30px;
     }
 
@@ -40,51 +43,59 @@
     }
 
     ul li {
-      background-color: #f1f1f1;
-      margin-bottom: 12px;
+      background-color: #2a2a2a;
+      margin-bottom: 14px;
       padding: 15px 20px;
       border-radius: 8px;
       display: flex;
       justify-content: space-between;
       align-items: center;
+      color: #ddd;
     }
 
     a {
       display: inline-block;
       text-decoration: none;
-      background-color: #007bff;
-      color: white;
-      padding: 12px 24px;
+      background-color: #fca311;
+      color: #000;
+      padding: 10px 20px;
       border-radius: 6px;
       transition: background-color 0.2s;
+      font-weight: bold;
     }
 
     a:hover {
-      background-color: #0056b3;
+      background-color: #e09110;
     }
 
     .count {
       font-weight: bold;
-      color: #007bff;
+      color: #fca311;
     }
 
     .chat-link {
       background-color: #28a745;
-      padding: 6px 12px;
+      padding: 6px 14px;
       border-radius: 5px;
       color: white;
       text-decoration: none;
       font-size: 14px;
+      font-weight: bold;
     }
 
     .chat-link:hover {
       background-color: #218838;
     }
+
+    hr {
+      border: none;
+      border-top: 1px solid #444;
+    }
   </style>
 </head>
 <body>
 
-<header>🚙 관리자 대시보드</header>
+<header> 관리자 대시보드</header>
 
 <div class="container">
   <h2>전체 상담 현황</h2>
@@ -108,14 +119,14 @@
 
   <hr style="margin: 40px 0;">
 
-  <h2 style="text-align: center;">최근 실시간 상담 유저</h2>
+  <h2>최근 실시간 상담 유저</h2>
   <ul>
     <li th:each="roomId : ${recentRoomIds}">
       <span>
         <span th:text="${#strings.replace(roomId, '_admin', '')}">유저명</span>
         <span th:if="${unreadCounts != null and unreadCounts[roomId] != null and unreadCounts[roomId] > 0}"
               th:text="'(' + ${unreadCounts[roomId]} + ')'"
-              style="margin-left: 8px; color: red; font-weight: bold;">
+              style="margin-left: 8px; color: #f44336; font-weight: bold;">
         </span>
       </span>
       <a th:href="@{'/admin/chatroom?target=' + ${#strings.replace(roomId, '_admin', '')}}"

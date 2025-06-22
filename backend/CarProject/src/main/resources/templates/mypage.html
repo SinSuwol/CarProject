@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <title>마이페이지</title>
+  <link rel="stylesheet" href="/static/css/common.css" />
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background-color: #121212;
+      margin: 0;
+      padding: 0;
+      color: #f0f0f0;
+    }
+
+    .container {
+      max-width: 800px;
+      margin: 40px auto;
+      background-color: #1c1c1c;
+      padding: 30px;
+      border-radius: 12px;
+      box-shadow: 0 0 16px rgba(0, 0, 0, 0.3);
+    }
+
+    h2, h3 {
+      color: #ffffff;
+      margin-bottom: 30px;
+    }
+
+    h2 {
+      border-bottom: 2px solid #444;
+      padding-bottom: 10px;
+    }
+
+    h3 {
+      margin-top: 60px;
+      border-left: 6px solid #444;
+      padding-left: 12px;
+    }
+
+    label {
+      font-weight: bold;
+      display: inline-block;
+      width: 130px;
+      margin-bottom: 10px;
+      color: #dddddd;
+    }
+
+    input {
+      padding: 8px;
+      width: 60%;
+      border: 1px solid #444;
+      border-radius: 6px;
+      margin-bottom: 12px;
+      background-color: #222;
+      color: #f0f0f0;
+    }
+
+    .message {
+      font-size: 14px;
+      margin-left: 130px;
+      margin-bottom: 12px;
+    }
+
+    .success { color: #4ac1ff; }
+    .error { color: #ff6b6b; }
+
+    button {
+      background: linear-gradient(145deg, #2a2a2a, #1a1a1a);
+      color: #ffffff;
+      border: 1px solid #333;
+      padding: 10px 22px;
+      border-radius: 8px;
+      font-weight: bold;
+      box-shadow: 2px 2px 6px #0d0d0d, -2px -2px 6px #292929;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background: linear-gradient(145deg, #1a1a1a, #2a2a2a);
+      color: #ff7043;
+      box-shadow: inset 2px 2px 6px #0d0d0d, inset -2px -2px 6px #292929;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 30px;
+      background-color: #1f1f1f;
+    }
+
+    th, td {
+      padding: 12px;
+      border: 1px solid #333;
+    }
+
+    th {
+      background-color: #2a2a2a;
+      color: #ffdd99;
+      font-weight: bold;
+    }
+
+    td {
+      color: #eaeaea;
+    }
+  </style>
+</head>
+
+<body>
+
+<!-- ✅ 공통 헤더 -->
+<jsp:include page="/WEB-INF/views/include/header.jsp" />
+
+<div class="container">
+  <h2>마이페이지</h2>
+  <form th:action="@{/mypage/update}" th:object="${user}" method="post" onsubmit="return validateForm()">
+    <p><label>아이디</label> <span th:text="*{username}"></span></p>
+    <input type="hidden" th:field="*{username}" />
+
+    <p><label>이메일</label> <input type="text" th:field="*{email}" /></p>
+    <p><label>전화번호</label> <input type="text" th:field="*{phone}" /></p>
+    <p><label>비밀번호 변경</label> <input type="password" id="password" th:field="*{password}" /></p>
+    <p><label>비밀번호 확인</label> <input type="password" id="confirmPassword" /></p>
+    <div id="pwMessage" class="message"></div>
+
+    <button type="submit">회원 정보 수정</button>
+  </form>
+
+  <h3>📋 신차 상담 내역</h3>
+  <table>
+    <tr><th>제목</th><th>내용</th></tr>
+    <tr th:each="car : ${newCarList}">
+      <td th:text="${car.ncTitle}"></td>
+      <td th:text="${car.ncContent}"></td>
+    </tr>
+  </table>
+
+  <h3>📋 렌트 상담 내역</h3>
+  <table>
+    <tr><th>제목</th><th>내용</th></tr>
+    <tr th:each="rent : ${rentList}">
+      <td th:text="${rent.rtTitle}"></td>
+      <td th:text="${rent.rtContent}"></td>
+    </tr>
+  </table>
+</div>
+
+<!-- ✅ 공통 푸터 -->
+<jsp:include page="/WEB-INF/views/include/footer.jsp" />
+
+<script>
+  const passwordField = document.getElementById("password");
+  const confirmField = document.getElementById("confirmPassword");
+  const messageBox = document.getElementById("pwMessage");
+
+  function checkMatch() {
+    const pw = passwordField.value;
+    const confirm = confirmField.value;
+    if (!pw && !confirm) return messageBox.textContent = '';
+    if (pw === confirm) {
+      messageBox.textContent = '비밀번호가 일치합니다.';
+      messageBox.className = 'message success';
+    } else {
+      messageBox.textContent = '비밀번호가 일치하지 않습니다.';
+      messageBox.className = 'message error';
+    }
+  }
+
+  passwordField.addEventListener("input", checkMatch);
+  confirmField.addEventListener("input", checkMatch);
+
+  function validateForm() {
+    const pw = passwordField.value;
+    const confirm = confirmField.value;
+    if (pw && pw !== confirm) {
+      alert("비밀번호가 일치하지 않습니다.");
+      return false;
+    }
+    return true;
+  }
+</script>
+
+</body>
+</html>

@@ -20,4 +20,9 @@ public class MainController {
     public String registForm() {
         return "regist";
     }
+    @GetMapping("/register")
+    public String registerPage() {
+        return "regist";  // templates/regist.html
+    }
+
 }

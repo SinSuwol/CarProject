@@ -1,112 +1,136 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <meta charset="UTF-8">
-  <title>로그인</title>
-  <style>
-    * {
-      box-sizing: border-box;
-    }
+<meta charset="UTF-8">
+<title>로그인</title>
+<style>
+* {
+	box-sizing: border-box;
+}
 
-    body, html {
-      margin: 0;
-      padding: 0;
-      height: 100%;
-      font-family: 'Segoe UI', sans-serif;
-    }
+body, html {
+	margin: 0;
+	padding: 0;
+	height: 100%;
+	font-family: 'Segoe UI', sans-serif;
+}
 
-    .background {
-      position: absolute;
-      top: 0; left: 0;
-      width: 100%;
-      height: 100%;
-      background: url('https://www.kia.com/content/dam/kwp/kr/ko/main-kv-contents/202310/kv_used_car_pc.png') no-repeat center center fixed;
-      background-size: cover;
-      z-index: 0;
-    }
+.background {
+	position: absolute;
+	top: 0;
+	left: 0;
+	width: 100%;
+	height: 100%;
+	background:
+		url('https://www.kia.com/content/dam/kwp/kr/ko/main-kv-contents/202310/kv_used_car_pc.png')
+		no-repeat center center fixed;
+	background-size: cover;
+	z-index: 0;
+}
 
-    .overlay {
-      position: absolute;
-      top: 0; left: 0;
-      width: 100%;
-      height: 100%;
-      background: rgba(0, 0, 0, 0.4);
-      z-index: 1;
-    }
+.overlay {
+	position: absolute;
+	top: 0;
+	left: 0;
+	width: 100%;
+	height: 100%;
+	background: rgba(0, 0, 0, 0.4);
+	z-index: 1;
+}
 
-    .container {
-      position: relative;
-      z-index: 2;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      height: 100%;
-    }
+.container {
+	position: relative;
+	z-index: 2;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	height: 100%;
+}
 
-    .login-box {
-      background: rgba(255, 255, 255, 0.1);
-      backdrop-filter: blur(5px);
-      border-radius: 16px;
-      padding: 40px;
-      width: 320px;
-      color: white;
-      box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.3);
-      text-align: center;
-    }
+.login-box {
+	background: rgba(255, 255, 255, 0.1);
+	backdrop-filter: blur(5px);
+	border-radius: 16px;
+	padding: 40px;
+	width: 320px;
+	color: white;
+	box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+	text-align: center;
+}
 
-    .login-box h2 {
-      font-size: 24px;
-      margin-bottom: 30px;
-      letter-spacing: 1px;
-    }
+.login-box h2 {
+	font-size: 24px;
+	margin-bottom: 30px;
+	letter-spacing: 1px;
+}
 
-    .login-box input {
-      width: 100%;
-      padding: 10px 5px;
-      font-size: 16px;
-      color: white;
-      border: none;
-      border-bottom: 1px solid #ccc;
-      background: transparent;
-      outline: none;
-      margin-bottom: 15px;
-    }
+.login-box input {
+	width: 100%;
+	padding: 10px 5px;
+	font-size: 16px;
+	color: white;
+	border: none;
+	border-bottom: 1px solid #ccc;
+	background: transparent;
+	outline: none;
+	margin-bottom: 15px;
+}
 
-    .login-box input:focus {
-      border-bottom: 2px solid #00aaff;
-    }
+.login-box input:focus {
+	border-bottom: 2px solid #00aaff;
+}
 
-    .login-box button {
-      margin-top: 30px;
-      width: 100%;
-      padding: 12px;
-      background-color: #007bff;
-      border: none;
-      color: white;
-      font-size: 16px;
-      border-radius: 8px;
-      cursor: pointer;
-    }
+.button-group {
+	display: flex;
+	justify-content: space-between;
+	gap: 10px;
+	margin-top: 30px;
+}
 
-    .login-box button:hover {
-      background-color: #0056b3;
-    }
-  </style>
+.button-group button {
+	flex: 1;
+	padding: 12px;
+	background: linear-gradient(145deg, #2a2a2a, #1a1a1a);
+	color: #ffffff;
+	border: 1px solid #333;
+	font-size: 16px;
+	border-radius: 8px;
+	font-weight: bold;
+	box-shadow: 2px 2px 6px #0d0d0d, -2px -2px 6px #292929;
+	cursor: pointer;
+	transition: all 0.2s ease-in-out;
+}
+
+.button-group button:hover {
+	background: linear-gradient(145deg, #1a1a1a, #2a2a2a);
+	color: #ff7043;
+	box-shadow: inset 2px 2px 6px #0d0d0d, inset -2px -2px 6px #292929;
+}
+</style>
 </head>
 <body>
-<div class="background"></div>
-<div class="overlay"></div>
+	<div class="background"></div>
+	<div class="overlay"></div>
 
-<div class="container">
-  <div class="login-box">
-    <h2>Login</h2>
-    <input type="text" id="username" placeholder="ID" required><br>
-    <input type="password" id="password" placeholder="PASSWORD" required><br>
-    <button onclick="submitLogin()">login</button><br>
-  </div>
-</div>
+	<div class="container">
+		<div class="login-box">
+			<h2>Login</h2>
+			<input type="text" id="username" placeholder="ID" required><br>
+			<input type="password" id="password" placeholder="PASSWORD" required><br>
 
-<script>
+			<!-- 버튼 그룹 -->
+			<div class="button-group">
+				<button onclick="goRegister()">회원가입</button>
+				<button onclick="submitLogin()">로그인</button>
+			</div>
+		</div>
+	</div>
+
+	<script>
+  function goRegister() {
+    window.location.href = "/register";
+  }
+
   function submitLogin() {
     const data = {
       username: document.getElementById("username").value,

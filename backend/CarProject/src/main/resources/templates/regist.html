@@ -1,116 +1,275 @@
 <!DOCTYPE html>
-<html>
+<html lang="ko">
 <head>
-<meta charset="UTF-8">
-<title>회원가입</title>
-<style>
-	* {
-      box-sizing: border-box;
-    }
+  <meta charset="UTF-8">
+  <title>회원가입</title>
+  <style>
+    * { box-sizing: border-box; }
 
-   body, html {
+    html, body {
       margin: 0;
       padding: 0;
-      height: 100%;
+      min-height: 100vh;
       font-family: 'Segoe UI', sans-serif;
+      overflow-x: hidden;
+      color: white;
     }
 
-    /* 배경 이미지 */
     .background {
-      position: absolute;
+      position: fixed;
       top: 0; left: 0;
       width: 100%;
       height: 100%;
-      background: url('https://www.kia.com/content/dam/kwp/kr/ko/main-kv-contents/202310/kv_used_car_pc.png') no-repeat center center fixed;
+      background: url('https://www.kia.com/content/dam/kwp/kr/ko/main-kv-contents/202310/kv_used_car_pc.png') no-repeat center center;
       background-size: cover;
       z-index: 0;
     }
 
-    /* 어두운 반투명 배경 덮개 */
     .overlay {
-      position: absolute;
+      position: fixed;
       top: 0; left: 0;
       width: 100%;
       height: 100%;
-      background: rgba(0, 0, 0, 0.4);
+      background: rgba(0, 0, 0, 0.6);
       z-index: 1;
     }
 
-    /* 로그인 폼 영역 */
     .container {
       position: relative;
       z-index: 2;
       display: flex;
       justify-content: center;
-      align-items: center;
-      height: 100%;
+      padding: 80px 20px;
     }
 
     .reg-box {
-      background: rgba(255, 255, 255, 0.1);
-      backdrop-filter: blur(5px);
+      background: rgba(0, 0, 0, 0.65);
+      backdrop-filter: blur(6px);
       border-radius: 16px;
-      padding: 40px;
-      width: 320px;
-      color: white;
-      box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.3);
-      text-align: center;
+      padding: 40px 30px;
+      width: 400px;
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
     }
 
     .reg-box h2 {
-      font-size: 24px;
-      margin-bottom: 30px;
-      letter-spacing: 1px;
+      font-size: 26px;
+      text-align: center;
+      margin-bottom: 24px;
+      color: #ffffff;
     }
 
+    label {
+      display: block;
+      font-size: 13px;
+      margin-top: 16px;
+      margin-bottom: 6px;
+    }
 
     .reg-box input {
       width: 100%;
-      padding: 10px 5px;
-      font-size: 16px;
+      padding: 10px 8px;
+      font-size: 15px;
       color: white;
       border: none;
-      border-bottom: 1px solid #ccc;
+      border-bottom: 1px solid #666;
       background: transparent;
       outline: none;
-      margin-bottom: 15px;
+    }
+
+    .reg-box input::placeholder {
+      color: #aaa;
     }
 
     .reg-box input:focus {
-      border-bottom: 2px solid #00aaff;
+      border-bottom: 2px solid #ff7043;
     }
 
-    .reg-box button {
-      margin-top: 30px;
+    .id-check {
+      display: flex;
+      align-items: flex-end;
+      gap: 8px;
+    }
+
+    .id-check input {
+      flex: 1;
+    }
+
+    .id-check button {
+      background: linear-gradient(145deg, #2a2a2a, #1a1a1a);
+      color: white;
+      border: 1px solid #333;
+      padding: 8px 12px;
+      font-size: 13px;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: 0.2s;
+    }
+
+    .id-check button:hover {
+      background: #444;
+      color: #ff7043;
+    }
+
+    .msg {
+      font-size: 13px;
+      margin-top: 4px;
+      min-height: 18px;
+    }
+
+    .msg.ok { color: #90ee90; }
+    .msg.fail { color: #ff8888; }
+
+    .reg-box button[type="submit"] {
+      margin-top: 28px;
       width: 100%;
       padding: 12px;
-      background-color: #007bff;
-      border: none;
+      background: linear-gradient(145deg, #2a2a2a, #1a1a1a);
       color: white;
       font-size: 16px;
       border-radius: 8px;
+      font-weight: bold;
+      border: 1px solid #333;
+      box-shadow: 2px 2px 6px #0d0d0d, -2px -2px 6px #292929;
       cursor: pointer;
+      transition: all 0.2s ease-in-out;
     }
 
-    .login-box button:hover {
-      background-color: #0056b3;
+    .reg-box button[type="submit"]:hover {
+      background: linear-gradient(145deg, #1a1a1a, #2a2a2a);
+      color: #ff7043;
+      box-shadow: inset 2px 2px 6px #0d0d0d, inset -2px -2px 6px #292929;
     }
-</style>
+
+    .reg-box button:disabled {
+      background-color: #555;
+      color: #bbb;
+      cursor: not-allowed;
+    }
+  </style>
 </head>
 <body>
 <div class="background"></div>
 <div class="overlay"></div>
 
 <div class="container">
-	<form class="reg-box" action="/register" method="post">
-		<h2>회원가입</h2>
-		<input type="text" name="username" placeholder="ID"><br>
-		<input type="text" name="password" placeholder="PASSWORD"><br>
-		<input type="text" name="name" placeholder="NAME"><br>
-		<input type="text" name="email" placeholder="EMAIL"><br>
-		<input type="text" name="phone" placeholder="PHONE"><br>
-		<button type="submit">회원가입</button>
-	</form>
+  <form class="reg-box" id="regForm" action="/register" method="post">
+    <h2>회원가입</h2>
+
+    <label for="username">아이디</label>
+    <div class="id-check">
+      <input type="text" name="username" id="username" placeholder="아이디 입력" required>
+      <button type="button" onclick="checkId()">중복확인</button>
+    </div>
+    <div id="idMsg" class="msg"></div>
+
+    <label for="password">비밀번호</label>
+    <input type="password" name="password" id="password" placeholder="비밀번호 입력" required>
+
+    <label for="confirm">비밀번호 확인</label>
+    <input type="password" id="confirm" placeholder="비밀번호 재입력" required>
+    <div id="pwMsg" class="msg"></div>
+
+    <label for="name">이름</label>
+    <input type="text" name="name" id="name" placeholder="이름" required>
+
+    <label for="email">이메일</label>
+    <input type="email" name="email" id="email" placeholder="이메일 입력" required>
+
+    <label for="phone">전화번호</label>
+    <input type="text" name="phone" id="phone" placeholder="010-xxxx-xxxx" required>
+
+    <button type="submit" id="submitBtn" disabled>회원가입</button>
+  </form>
 </div>
+
+<script>
+  const pwInput = document.getElementById("password");
+  const confirmInput = document.getElementById("confirm");
+  const btn = document.getElementById("submitBtn");
+  const idInput = document.getElementById("username");
+  const idMsg = document.getElementById("idMsg");
+  const pwMsg = document.getElementById("pwMsg");
+
+  let isIdChecked = false;
+
+  function validateAll() {
+    const username = idInput.value.trim();
+    const password = pwInput.value.trim();
+    const confirm = confirmInput.value.trim();
+    const name = document.getElementById("name").value.trim();
+    const email = document.getElementById("email").value.trim();
+    const phone = document.getElementById("phone").value.trim();
+    const pwRule = /^[A-Za-z](?=.*[!@#$%^&*])(?=.*\d).{7,}$/;
+
+    if (!username || !password || !confirm || !name || !email || !phone || !isIdChecked) {
+      btn.disabled = true;
+      return;
+    }
+
+    if (!pwRule.test(password)) {
+      pwMsg.textContent = "비밀번호는 영문 시작 + 특수문자 + 숫자 포함 8자 이상";
+      pwMsg.className = "msg fail";
+      btn.disabled = true;
+    } else if (password !== confirm) {
+      pwMsg.textContent = "비밀번호가 일치하지 않습니다.";
+      pwMsg.className = "msg fail";
+      btn.disabled = true;
+    } else {
+      pwMsg.textContent = "비밀번호가 일치합니다.";
+      pwMsg.className = "msg ok";
+      btn.disabled = false;
+    }
+  }
+
+  function checkId() {
+    const username = idInput.value.trim();
+    if (!username) {
+      idMsg.textContent = "아이디를 입력하세요.";
+      idMsg.className = "msg fail";
+      isIdChecked = false;
+      validateAll();
+      return;
+    }
+
+    fetch("/check-username?username=" + encodeURIComponent(username))
+      .then(res => res.json())
+      .then(data => {
+        if (data.available) {
+          idMsg.textContent = "사용 가능한 아이디입니다.";
+          idMsg.className = "msg ok";
+          isIdChecked = true;
+        } else {
+          idMsg.textContent = "이미 사용 중인 아이디입니다.";
+          idMsg.className = "msg fail";
+          isIdChecked = false;
+        }
+        validateAll();
+      })
+      .catch(() => {
+        idMsg.textContent = "서버 응답 오류입니다.";
+        idMsg.className = "msg fail";
+        isIdChecked = false;
+        validateAll();
+      });
+  }
+
+  document.getElementById("regForm").addEventListener("input", validateAll);
+
+  document.getElementById("regForm").addEventListener("submit", async function(e) {
+    e.preventDefault();
+    const formData = new FormData(this);
+    const res = await fetch("/register", {
+      method: "POST",
+      body: formData
+    });
+
+    if (res.ok) {
+      alert("회원가입에 성공하였습니다.");
+      window.location.href = "/";
+    } else {
+      alert("회원가입에 실패했습니다. 다시 시도해주세요.");
+    }
+  });
+</script>
 </body>
 </html>

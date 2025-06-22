@@ -4,7 +4,10 @@ import com.example.car.auth.JWTUtil;
 import com.example.car.dto.LoginDto;
 import com.example.car.dto.UserDto;
 import com.example.car.entity.Member;
+import com.example.car.repository.MemberRepository;
 import com.example.car.service.MemberService;
+import com.sun.source.tree.MemberReferenceTree;
+
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
@@ -21,12 +24,19 @@ public class AuthController {
     private final JWTUtil jwtUtil;
 
     @PostMapping("/register")
-    public String register(@RequestBody UserDto userDto) {
-        System.out.println(">> 회원가입 요청: " + userDto);
+    public String register(UserDto userDto) {
         memberService.register(userDto);
-        return "회원가입 성공";
+        return "success"; // JS에서 판단할 수 있게 문자열만 반환
     }
 
+ // ✅ 이게 가장 깔끔
+    @GetMapping("/check-username")
+    public Map<String, Object> checkUsername(@RequestParam("username") String username) {
+        boolean exists = memberService.isUsernameTaken(username);
+        Map<String, Object> result = new HashMap<>();
+        result.put("available", !exists);
+        return result;
+    }
 
     @PostMapping("/login")
     public Map<String, Object> login(@RequestBody LoginDto loginDto, HttpSession session) {

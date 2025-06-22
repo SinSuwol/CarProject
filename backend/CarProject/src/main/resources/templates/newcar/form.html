@@ -1,96 +1,109 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
-    <meta charset="UTF-8">
-    <title>상담 등록</title>
-    <style>
-        body {
-            font-family: 'Arial', sans-serif;
-            background-color: #ffffff;
-            color: #000000;
-            margin: 0;
-            padding: 20px;
-        }
+  <meta charset="UTF-8">
+  <title>신차 상담 등록</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background-color: #111;
+      color: #fff;
+      margin: 0;
+      padding: 30px;
+    }
 
-        h1 {
-            text-align: center;
-            color: #000000;
-            margin-bottom: 30px;
-        }
+    h1 {
+      text-align: center;
+      color: #ffffff;
+      margin-bottom: 40px;
+    }
 
-        form {
-            max-width: 600px;
-            margin: 0 auto;
-            background-color: #f9f9f9;
-            padding: 30px;
-            border-radius: 8px;
-            border: 1px solid #cccccc;
-        }
+    form {
+      max-width: 700px;
+      margin: 0 auto;
+      background-color: #1e1e1e;
+      padding: 30px 40px;
+      border-radius: 10px;
+      box-shadow: 0 4px 10px rgba(255, 255, 255, 0.05);
+    }
 
-        label {
-            display: block;
-            margin-top: 15px;
-            font-weight: bold;
-            color: #111111;
-        }
+    label {
+      display: block;
+      margin-top: 20px;
+      font-weight: bold;
+      color: #ffffff;
+    }
 
-        input[type="text"],
-        textarea {
-            width: 100%;
-            padding: 10px;
-            margin-top: 5px;
-            border: 1px solid #333333;
-            background-color: #ffffff;
-            color: #000000;
-            border-radius: 4px;
-            box-sizing: border-box;
-        }
+    input[type="text"],
+    textarea {
+      width: 100%;
+      padding: 12px;
+      margin-top: 8px;
+      border: 1px solid #444;
+      background-color: #2a2a2a;
+      color: #ffffff;
+      border-radius: 6px;
+      font-size: 15px;
+      transition: border-color 0.2s, background-color 0.2s;
+    }
 
-        input[type="text"]:focus,
-        textarea:focus {
-            outline: none;
-            border-color: #000000;
-            background-color: #f0f0f0;
-        }
+    input[type="text"]::placeholder,
+    textarea::placeholder {
+      color: #bbb;
+    }
 
-        button {
-            margin-top: 20px;
-            padding: 10px 20px;
-            background-color: #000000;
-            color: #ffffff;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-        }
+    input[type="text"]:focus,
+    textarea:focus {
+      outline: none;
+      border-color: #fca311;
+      background-color: #333;
+    }
 
-        button:hover {
-            background-color: #333333;
-        }
+    button {
+      margin-top: 30px;
+      padding: 12px 24px;
+      background-color: #fca311;
+      color: #000;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 16px;
+      font-weight: bold;
+      transition: background-color 0.2s;
+    }
 
-        a {
-            margin-left: 15px;
-            color: #000000;
-            text-decoration: underline;
-            font-size: 14px;
-        }
+    button:hover {
+      background-color: #e09110;
+    }
 
-        a:hover {
-            color: #555555;
-        }
-    </style>
+    a {
+      margin-left: 16px;
+      color: #fca311;
+      font-size: 14px;
+      text-decoration: none;
+      vertical-align: middle;
+    }
+
+    a:hover {
+      text-decoration: underline;
+      color: #ffb43b;
+    }
+  </style>
 </head>
 <body>
-    <h1>신차 상담 등록</h1>
 
-    <form th:action="@{|/newcar/${username}/form|}" method="post" th:object="${dto}">
-        <label>제목:</label>
-        <input type="text" th:field="*{ncTitle}" required/><br/><br/>
+<h1>신차 상담 등록</h1>
 
-        <label>내용:</label><br/>
-        <textarea th:field="*{ncContent}" rows="10" cols="50" required></textarea><br/><br/>
+<form th:action="@{|/newcar/${username}/form|}" method="post" th:object="${dto}">
+  <label>제목</label>
+  <input type="text" th:field="*{ncTitle}" placeholder="제목을 입력하세요" required />
 
-        <button type="submit">등록</button>
-        <a th:href="@{|/newcar/${username}|}">목록으로</a>
-    </form>
+  <label>내용</label>
+  <textarea th:field="*{ncContent}" rows="10" placeholder="내용을 입력하세요" required></textarea>
+
+  <button type="submit">등록</button>
+  <a th:href="@{|/newcar/${username}|}">목록으로</a>
+</form>
+
 </body>
 </html>

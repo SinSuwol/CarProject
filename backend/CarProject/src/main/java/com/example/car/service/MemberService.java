@@ -41,7 +41,7 @@ public class MemberService {
                 .name(dto.getName())
                 .email(dto.getEmail())
                 .phone(dto.getPhone())
-                .role("USER") // 권한은 항상 대문자로 저장 권장
+                .role("USER")
                 .build();
         memberRepository.save(member);
     }
@@ -50,5 +50,26 @@ public class MemberService {
         return memberRepository.findByUsername(username)
                 .filter(m -> encoder.matches(password, m.getPassword()))
                 .orElse(null);
+    }
+
+    public boolean isUsernameTaken(String username) {
+        return memberRepository.findByUsername(username).isPresent();
+    }
+
+    // ✅ 마이페이지용 함수 구현 추가
+    public Member findByUsername(String username) {
+        return memberRepository.findByUsername(username).orElse(null);
+    }
+
+    public void updateMemberInfo(String username, String email, String phone, String password) {
+        Member member = memberRepository.findByUsername(username).orElseThrow();
+
+        if (email != null) member.setEmail(email);
+        if (phone != null) member.setPhone(phone);
+        if (password != null && !password.isEmpty()) {
+            member.setPassword(encoder.encode(password));
+        }
+
+        memberRepository.save(member);
     }
 }
