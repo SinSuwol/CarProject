@@ -14,6 +14,9 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
         registry.addEndpoint("/ws/chat")                   // ← 그대로
                 .setAllowedOriginPatterns("*")           // CORS 허용
                 .withSockJS();
+        
+        registry.addEndpoint("/ws/chat_f")
+        .setAllowedOriginPatterns("*"); // SockJS 제거
     }
 
     @Override

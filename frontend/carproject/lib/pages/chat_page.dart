@@ -23,9 +23,9 @@ class _ChatPageState extends State<ChatPage> {
   late String sender;
   bool loading = true;
 
-  // ✅ Spring 서버가 실행 중인 PC의 IP로 고정
-  static const springServerIp = '192.168.45.5';
-  static final wsUrl   = 'ws://$springServerIp:8090/ws/chat';
+  // ✅ 고정된 서버 주소 사용
+  static const springServerIp = '192.168.0.5';
+  static final wsUrl = 'ws://$springServerIp:8090/ws/chat_f'; // ✅ Flutter 전용
   static final apiBase = 'http://$springServerIp:8090';
 
   @override
@@ -37,7 +37,7 @@ class _ChatPageState extends State<ChatPage> {
   Future<void> _connectToWebSocket() async {
     final prefs = await SharedPreferences.getInstance();
     final token = prefs.getString('token');
-    final myId  = prefs.getString('username');
+    final myId = prefs.getString('username');
 
     if (token == null || myId == null) {
       _showErrorAndExit("로그인이 필요합니다.");

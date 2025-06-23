@@ -17,45 +17,61 @@ class _AdminDashboardPageState extends State<AdminDashboardPage> {
   List<String> rooms = [];
   bool loading = true;
 
-  //------------------------------------------------------------------ init
   @override
   void initState() {
     super.initState();
     _fetchRooms();
   }
 
-  //------------------------------------------------------------------ REST
+  // ----------------------------------------- REST API: 채팅방 목록 가져오기
   Future<void> _fetchRooms() async {
-    final prefs = await SharedPreferences.getInstance();
-    final token = prefs.getString('token');
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      final token = prefs.getString('token');
 
-    if (token == null) {
-      if (mounted) {
-        Navigator.pushReplacement(
-            context, MaterialPageRoute(builder: (_) => const LoginPage()));
+      if (token == null) {
+        if (mounted) {
+          Navigator.pushReplacement(
+              context, MaterialPageRoute(builder: (_) => const LoginPage()));
+        }
+        return;
       }
-      return;
-    }
 
-    final res = await http.get(
-      Uri.parse('http://192.168.0.5:8090/chat/rooms'),
-      headers: {'Authorization': 'Bearer $token'},
-    );
+      final res = await http.get(
+        Uri.parse('http://192.168.0.5:8090/chat/rooms'),
+        headers: {'Authorization': 'Bearer $token'},
+      );
 
-    if (res.statusCode == 200) {
+      print('방 목록 요청 응답 코드: ${res.statusCode}');
+      print('응답 본문: ${res.body}');
+
+      if (res.statusCode == 200) {
+        final decoded = jsonDecode(res.body);
+        if (decoded is List) {
+          setState(() {
+            rooms = List<String>.from(decoded);
+            loading = false;
+          });
+        } else {
+          throw Exception('응답 형식이 리스트가 아님');
+        }
+      } else {
+        throw Exception('HTTP ${res.statusCode}');
+      }
+    } catch (e) {
       setState(() {
-        rooms = List<String>.from(jsonDecode(res.body));
         loading = false;
       });
-    } else {
-      setState(() {
-        loading = false;
+      print('방 목록 가져오기 오류: $e');
+      if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text('방 목록 조회 실패: ${res.statusCode}')));
-      });
+          SnackBar(content: Text('방 목록 조회 실패: $e')),
+        );
+      }
     }
   }
 
+  // ----------------------------------------- 로그아웃
   Future<void> _logout() async {
     final prefs = await SharedPreferences.getInstance();
     await prefs.clear();
@@ -66,7 +82,7 @@ class _AdminDashboardPageState extends State<AdminDashboardPage> {
             (_) => false);
   }
 
-  //------------------------------------------------------------------ UI
+  // ----------------------------------------- UI
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -74,20 +90,27 @@ class _AdminDashboardPageState extends State<AdminDashboardPage> {
         title: const Text('상담 대기 목록 (관리자)'),
         actions: [
           IconButton(
-              tooltip: '새로고침',
-              onPressed: () {
-                setState(() => loading = true);
-                _fetchRooms();
-              },
-              icon: const Icon(Icons.refresh)),
+            tooltip: '새로고침',
+            onPressed: () {
+              setState(() => loading = true);
+              _fetchRooms();
+            },
+            icon: const Icon(Icons.refresh),
+          ),
           IconButton(
-              tooltip: '로그아웃',
-              onPressed: _logout,
-              icon: const Icon(Icons.logout)),
+            tooltip: '로그아웃',
+            onPressed: _logout,
+            icon: const Icon(Icons.logout),
+          ),
         ],
       ),
       body: loading
-          ? const Center(child: CircularProgressIndicator())
+          ? const Center(
+        child: CircularProgressIndicator(
+          color: Colors.deepOrangeAccent,
+          strokeWidth: 4,
+        ),
+      )
           : rooms.isEmpty
           ? const Center(child: Text('현재 대기 중인 회원이 없습니다'))
           : ListView.separated(

@@ -107,7 +107,7 @@ class _RegisterPageState extends State<RegisterPage> {
       return;
     }
 
-    final url = Uri.parse('http://localhost:8090/register');
+    final url = Uri.parse('http://192.168.0.5:8090:register');
     final response = await http.post(
       url,
       headers: {'Content-Type': 'application/json'},

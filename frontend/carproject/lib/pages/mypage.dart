@@ -35,7 +35,7 @@ class _MyPageState extends State<MyPage> {
 
     try {
       final res = await http.get(
-        Uri.parse('http://localhost:8090/mypage'),
+        Uri.parse('http://192.168.0.5:8090/mypage'),
         headers: {"Authorization": "Bearer $token"},
       );
 
