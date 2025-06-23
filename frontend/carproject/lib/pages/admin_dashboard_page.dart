@@ -23,7 +23,6 @@ class _AdminDashboardPageState extends State<AdminDashboardPage> {
     _fetchRooms();
   }
 
-  // ----------------------------------------- REST API: 채팅방 목록 가져오기
   Future<void> _fetchRooms() async {
     try {
       final prefs = await SharedPreferences.getInstance();
@@ -32,7 +31,9 @@ class _AdminDashboardPageState extends State<AdminDashboardPage> {
       if (token == null) {
         if (mounted) {
           Navigator.pushReplacement(
-              context, MaterialPageRoute(builder: (_) => const LoginPage()));
+            context,
+            MaterialPageRoute(builder: (_) => const LoginPage()),
+          );
         }
         return;
       }
@@ -41,9 +42,6 @@ class _AdminDashboardPageState extends State<AdminDashboardPage> {
         Uri.parse('http://192.168.0.5:8090/chat/rooms'),
         headers: {'Authorization': 'Bearer $token'},
       );
-
-      print('방 목록 요청 응답 코드: ${res.statusCode}');
-      print('응답 본문: ${res.body}');
 
       if (res.statusCode == 200) {
         final decoded = jsonDecode(res.body);
@@ -59,10 +57,7 @@ class _AdminDashboardPageState extends State<AdminDashboardPage> {
         throw Exception('HTTP ${res.statusCode}');
       }
     } catch (e) {
-      setState(() {
-        loading = false;
-      });
-      print('방 목록 가져오기 오류: $e');
+      setState(() => loading = false);
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text('방 목록 조회 실패: $e')),
@@ -71,23 +66,30 @@ class _AdminDashboardPageState extends State<AdminDashboardPage> {
     }
   }
 
-  // ----------------------------------------- 로그아웃
   Future<void> _logout() async {
     final prefs = await SharedPreferences.getInstance();
     await prefs.clear();
     if (!mounted) return;
     Navigator.pushAndRemoveUntil(
-        context,
-        MaterialPageRoute(builder: (_) => const LoginPage()),
-            (_) => false);
+      context,
+      MaterialPageRoute(builder: (_) => const LoginPage()),
+          (_) => false,
+    );
   }
 
-  // ----------------------------------------- UI
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: const Color(0xFF121212),
       appBar: AppBar(
-        title: const Text('상담 대기 목록 (관리자)'),
+        backgroundColor: Colors.black,
+        title: const Text(
+          '상담 대기 목록 (관리자)',
+          style: TextStyle(
+            color: Color(0xFFFF6D00),
+            fontWeight: FontWeight.bold,
+          ),
+        ),
         actions: [
           IconButton(
             tooltip: '새로고침',
@@ -95,33 +97,54 @@ class _AdminDashboardPageState extends State<AdminDashboardPage> {
               setState(() => loading = true);
               _fetchRooms();
             },
-            icon: const Icon(Icons.refresh),
+            icon: const Icon(Icons.refresh, color: Colors.white),
+          ),
+          IconButton(
+            tooltip: '메인으로',
+            onPressed: () {
+              Navigator.pushNamedAndRemoveUntil(context, '/', (_) => false);
+            },
+            icon: const Icon(Icons.home_outlined, color: Colors.white),
           ),
           IconButton(
             tooltip: '로그아웃',
             onPressed: _logout,
-            icon: const Icon(Icons.logout),
+            icon: const Icon(Icons.logout, color: Colors.white),
           ),
         ],
       ),
       body: loading
           ? const Center(
         child: CircularProgressIndicator(
-          color: Colors.deepOrangeAccent,
+          color: Color(0xFFFF6D00),
           strokeWidth: 4,
         ),
       )
           : rooms.isEmpty
-          ? const Center(child: Text('현재 대기 중인 회원이 없습니다'))
+          ? const Center(
+        child: Text(
+          '현재 대기 중인 회원이 없습니다',
+          style: TextStyle(color: Colors.white70),
+        ),
+      )
           : ListView.separated(
         itemCount: rooms.length,
-        separatorBuilder: (_, __) => const Divider(height: 1),
+        separatorBuilder: (_, __) => const Divider(
+          height: 1,
+          color: Colors.grey,
+        ),
         itemBuilder: (_, i) {
           final user = rooms[i];
           return ListTile(
-            leading: const Icon(Icons.person_outline),
-            title: Text('회원: $user'),
-            trailing: const Icon(Icons.chat_bubble_outline),
+            tileColor: const Color(0xFF1E1E1E),
+            leading: const Icon(Icons.person_outline,
+                color: Colors.white70),
+            title: Text(
+              '회원: $user',
+              style: const TextStyle(color: Colors.white),
+            ),
+            trailing: const Icon(Icons.chat_bubble_outline,
+                color: Color(0xFFFF6D00)),
             onTap: () => Navigator.push(
               context,
               MaterialPageRoute(

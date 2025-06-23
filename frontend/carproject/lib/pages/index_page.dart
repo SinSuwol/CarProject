@@ -82,7 +82,7 @@ class _IndexPageState extends State<IndexPage> {
       appBar: AppBar(
         backgroundColor: const Color(0xFF1F2A3C),
         title: const Text(
-          '드림카 - 자동차 상담 시스템',
+          '만나카(Car)',
           style: TextStyle(color: Colors.white),
         ),
         actions: [
@@ -165,7 +165,7 @@ class _IndexPageState extends State<IndexPage> {
     return Column(
       children: const [
         Text(
-          '당신의 드림카,\n윤카에서 시작하세요',
+          '당신의 드림카,\n만나카(Car)에서 시작하세요',
           textAlign: TextAlign.center,
           style: TextStyle(
             fontSize: 26,

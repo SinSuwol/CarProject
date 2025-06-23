@@ -23,9 +23,8 @@ class _ChatPageState extends State<ChatPage> {
   late String sender;
   bool loading = true;
 
-  // ✅ 고정된 서버 주소 사용
   static const springServerIp = '192.168.0.5';
-  static final wsUrl = 'ws://$springServerIp:8090/ws/chat_f'; // ✅ Flutter 전용
+  static final wsUrl = 'ws://$springServerIp:8090/ws/chat_f';
   static final apiBase = 'http://$springServerIp:8090';
 
   @override
@@ -115,38 +114,69 @@ class _ChatPageState extends State<ChatPage> {
   @override
   Widget build(BuildContext context) {
     if (loading) {
-      return const Scaffold(body: Center(child: CircularProgressIndicator()));
+      return const Scaffold(
+        backgroundColor: Color(0xFF121212),
+        body: Center(
+          child: CircularProgressIndicator(color: Color(0xFFFF6D00)),
+        ),
+      );
     }
 
     return Scaffold(
-      appBar: AppBar(title: Text("상담방 - ${widget.roomId}")),
+      backgroundColor: const Color(0xFF121212),
+      appBar: AppBar(
+        backgroundColor: Colors.black,
+        title: Text(
+          "상담방 - ${widget.roomId}",
+          style: const TextStyle(color: Color(0xFFFF6D00)),
+        ),
+        iconTheme: const IconThemeData(color: Colors.white),
+      ),
       body: Column(
         children: [
           Expanded(
             child: _messages.isEmpty
-                ? const Center(child: Text('메시지가 없습니다'))
+                ? const Center(
+              child: Text('메시지가 없습니다',
+                  style: TextStyle(color: Colors.white70)),
+            )
                 : ListView.builder(
               itemCount: _messages.length,
               itemBuilder: (_, i) => _buildBubble(_messages[i]),
             ),
           ),
-          const Divider(),
+          const Divider(color: Colors.grey),
           Padding(
-            padding: const EdgeInsets.all(8),
+            padding: const EdgeInsets.all(10),
             child: Row(
               children: [
                 Expanded(
                   child: TextField(
                     controller: input,
-                    decoration: const InputDecoration(
+                    style: const TextStyle(color: Colors.white),
+                    decoration: InputDecoration(
                       hintText: '메시지를 입력하세요',
-                      border: OutlineInputBorder(),
+                      hintStyle: const TextStyle(color: Colors.grey),
+                      filled: true,
+                      fillColor: const Color(0xFF1E1E1E),
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(10),
+                        borderSide: BorderSide.none,
+                      ),
                     ),
                     onSubmitted: (_) => _send(),
                   ),
                 ),
                 const SizedBox(width: 8),
-                ElevatedButton(onPressed: _send, child: const Text("보내기")),
+                ElevatedButton(
+                  onPressed: _send,
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: const Color(0xFFFF6D00),
+                    padding:
+                    const EdgeInsets.symmetric(horizontal: 20, vertical: 14),
+                  ),
+                  child: const Text("보내기", style: TextStyle(color: Colors.white)),
+                ),
               ],
             ),
           ),
@@ -158,26 +188,40 @@ class _ChatPageState extends State<ChatPage> {
   Widget _buildBubble(Map<String, dynamic> msg) {
     final mine = msg['sender'] == sender;
     final text = msg['message'] ?? '';
-    final time = (msg['timestamp'] ?? '').toString().split(' ').lastOrNull ?? '';
+    final timestamp = msg['timestamp'];
+
+    String formattedTime = '';
+    if (timestamp != null && timestamp is String) {
+      try {
+        final parsed = DateTime.parse(timestamp);
+        formattedTime =
+        '${parsed.hour.toString().padLeft(2, '0')}:${parsed.minute.toString().padLeft(2, '0')}';
+      } catch (_) {
+        formattedTime = '';
+      }
+    }
 
     return Align(
       alignment: mine ? Alignment.centerRight : Alignment.centerLeft,
       child: Container(
-        margin: const EdgeInsets.symmetric(vertical: 4, horizontal: 10),
-        padding: const EdgeInsets.all(10),
+        margin: const EdgeInsets.symmetric(vertical: 4, horizontal: 12),
+        padding: const EdgeInsets.all(12),
         decoration: BoxDecoration(
-          color: mine ? Colors.orange.shade200 : Colors.grey.shade300,
-          borderRadius: BorderRadius.circular(12),
+          color: mine ? const Color(0xFFFF6D00) : const Color(0xFF2C2C2C),
+          borderRadius: BorderRadius.circular(16),
         ),
         child: Column(
           crossAxisAlignment:
           mine ? CrossAxisAlignment.end : CrossAxisAlignment.start,
           children: [
-            Text(text),
+            Text(
+              text,
+              style: const TextStyle(color: Colors.white, fontSize: 15),
+            ),
             const SizedBox(height: 4),
             Text(
-              time.length >= 5 ? time.substring(0, 5) : '',
-              style: const TextStyle(fontSize: 10, color: Colors.grey),
+              formattedTime,
+              style: const TextStyle(fontSize: 10, color: Colors.white60),
             ),
           ],
         ),
